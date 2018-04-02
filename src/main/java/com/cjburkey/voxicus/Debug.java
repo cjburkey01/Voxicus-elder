@@ -10,6 +10,7 @@ public class Debug {
 		if (logger == null) {
 			logger = log;
 		}
+		Thread.setDefaultUncaughtExceptionHandler((t, e) -> error(e));
 	}
 	
 	public static final void log(Object msg) {
@@ -28,9 +29,14 @@ public class Debug {
 		logger.error(sanitize(msg));
 	}
 	
+	public static final void error(Object msg, Object... param) {
+		logger.error(sanitize(msg), param);
+	}
+	
 	public static final void error(Throwable t) {
 		logger.error("An error occurred: " + sanitize(t.getMessage()));
 		t.printStackTrace();
+		System.exit(-1);
 	}
 	
 	private static final String sanitize(Object msg) {

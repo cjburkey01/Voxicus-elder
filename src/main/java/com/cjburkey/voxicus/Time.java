@@ -5,12 +5,12 @@ public class Time {
 	private static double startTimeSeconds;
 	
 	// In seconds
-	private static double previousTime = 0.0d;
-	private static double currentTime = 0.0d;
+	private static double previousTime = getTimeSeconds();
+	private static double currentTime = getTimeSeconds();
 	private static double deltaTime = 0.0d;
 	
 	public static void init() {
-		startTimeSeconds = Math.abs(System.nanoTime()) / 1000000000.0d;
+		startTimeSeconds = getTimeSeconds();
 	}
 	
 	public static void update(long updateStartTimeNanos) {
@@ -29,6 +29,10 @@ public class Time {
 	
 	public static double getDeltaTime() {
 		return deltaTime;
+	}
+	
+	private static double getTimeSeconds() {
+		return Math.abs(System.nanoTime()) / 1000000000.0d;
 	}
 	
 }
