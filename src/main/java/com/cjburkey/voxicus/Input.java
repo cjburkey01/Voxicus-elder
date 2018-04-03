@@ -52,6 +52,10 @@ public class Input {
 		mouseDelta.set(currMousePos.x - prevMousePos.x, currMousePos.y - prevMousePos.y);
 	}
 	
+	public static void voidMouseMovement() {
+		prevMousePos.set(currMousePos);
+		mouseDelta.set(0.0f, 0.0f);
+	}
 	/**
 	 * True for every frame that a key is held down
 	 */

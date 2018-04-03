@@ -1,72 +1,68 @@
 package com.cjburkey.voxicus;
 
-import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+import com.cjburkey.voxicus.component.ComponentCamera;
+import com.cjburkey.voxicus.component.ComponentFreeMove;
+import com.cjburkey.voxicus.component.ComponentMesh;
+import com.cjburkey.voxicus.component.ComponentMouseLook;
 
 public class InstanceVoxicus implements IInstance {
-	
-	private float rotationSpeed = 90f;
-	private Vector2f camRotVel = new Vector2f();
-	private Vector2f camRotation = new Vector2f();
 	
 	private GameObject obj1;
 	private GameObject obj2;
 	private GameObject obj3;
 	
 	public void init() {
-		Mesh mesh = new Mesh();
-		mesh.updateMesh(Util.arrayToList(new Vector3f[] {
-			new Vector3f(-0.5f, 0.5f, 0.0f),	// 0
-			new Vector3f(-0.5f, -0.5f, 0.0f),	// 1
-			new Vector3f(0.5f, -0.5f, 0.0f),	// 2
-			new Vector3f(0.5f, 0.5f, 0.0f)	// 3
+		ComponentMesh mesh = new ComponentMesh();
+		mesh.setMesh(Util.arrayToList(new Vector3f[] {
+			// Vertices
+			new Vector3f(-0.5f, 0.5f, 0.5f),	// 0
+			new Vector3f(-0.5f, -0.5f, 0.5f),	// 1
+			new Vector3f(0.5f, -0.5f, 0.5f),	// 2
+			new Vector3f(0.5f, 0.5f, 0.5f),		// 3
+			new Vector3f(-0.5f, 0.5f, -0.5f),	// 4
+			new Vector3f(-0.5f, -0.5f, -0.5f),	// 5
+			new Vector3f(0.5f, -0.5f, -0.5f),	// 6
+			new Vector3f(0.5f, 0.5f, -0.5f)		// 7
 		}), Util.arrayToList(new Short[] {
-			0, 1, 2,
-			0, 2, 3
+			// Indices
+			0, 1, 2,	0, 2, 3,	// Front
+			6, 5, 4,	7, 6, 4,	// Back
+			3, 2, 6,	3, 6, 7,	// Right
+			4, 5, 1,	4, 1, 0,	// Left
+			4, 0, 3,	4, 3, 7,	// Top
+			2, 1, 5,	6, 2, 5		// Bottom
 		}), Util.arrayToList(new Vector3f[] {
+			// Colors
 			new Vector3f(1.0f, 0.0f, 0.0f),
 			new Vector3f(0.0f, 1.0f, 0.0f),
+			new Vector3f(1.0f, 1.0f, 0.0f),
 			new Vector3f(0.0f, 0.0f, 1.0f),
-			new Vector3f(1.0f, 1.0f, 0.0f)
+			new Vector3f(1.0f, 0.0f, 1.0f),
+			new Vector3f(0.0f, 1.0f, 1.0f),
+			new Vector3f(1.0f, 1.0f, 1.0f),
+			new Vector3f(0.5f, 0.5f, 0.5f)
 		}));
-		obj1 = new GameObject(mesh);
-		obj2 = new GameObject(new Transform(new Vector3f(1.38f, 0.0f, -1.0f)), mesh);
-		obj3 = new GameObject(new Transform(new Vector3f(-3.1f, 0.0f, -3.0f)), mesh);
-		Voxicus.getGame().world.addObject(obj1);
-		Voxicus.getGame().world.addObject(obj2);
-		Voxicus.getGame().world.addObject(obj3);
+		
+		obj1 = Game.getWorld().addObject();
+		obj2 = Game.getWorld().addObject();
+		obj3 = Game.getWorld().addObject();
+		
+		obj1.transform.position.set(1.0f, 3.0f, -10.0f);
+		obj2.transform.position.set(1.38f, 0.0f, -1.0f);
+		obj3.transform.position.set(-3.1f, 0.0f, -3.0f);
+		
+		obj1.addComponent(mesh);
+		obj2.addComponent(mesh);
+		obj3.addComponent(mesh);
+		
+		GameObject camObj = Game.getWorld().addObject();
+		camObj.addComponent(new ComponentCamera(Game.getWindow().getWindowSize())).setClearColor(new Vector3f(0.1f, 0.1f, 0.1f));
+		camObj.addComponent(new ComponentMouseLook()).setMouseLock(true);
+		camObj.addComponent(new ComponentFreeMove());
 	}
 	
 	public void update() {
-		Transform cam = Voxicus.getGame().world.camera.transform;
-
-		camRotVel.set(Input.getMouseDelta().y, Input.getMouseDelta().x);
-		camRotVel.mul(rotationSpeed * (float) Time.getDeltaTime());
-		camRotation.add(camRotVel);
-		camRotation.x = Util.clamp(camRotation.x, -90.0f, 90.0f);
-		cam.rotation.rotationXYZ(camRotation.x * Util.DEG_RAD, camRotation.y * Util.DEG_RAD, 0.0f);
-		
-		Vector3f dir = new Vector3f(0.0f, 0.0f, 0.0f);
-		if (Input.getIsKeyDown(GLFW.GLFW_KEY_W)) {
-			dir.z -= 1.0f;
-		}
-		if (Input.getIsKeyDown(GLFW.GLFW_KEY_S)) {
-			dir.z += 1.0f;
-		}
-		if (Input.getIsKeyDown(GLFW.GLFW_KEY_A)) {
-			dir.x -= 1.0f;
-		}
-		if (Input.getIsKeyDown(GLFW.GLFW_KEY_D)) {
-			dir.x += 1.0f;
-		}
-		if (!dir.equals(new Vector3f())) {
-			dir = cam.transform(dir);
-			dir.normalize();
-			dir.mul((float) Time.getDeltaTime());
-		}
-		
-		cam.position.add(dir);
 	}
 	
 	public void render() {

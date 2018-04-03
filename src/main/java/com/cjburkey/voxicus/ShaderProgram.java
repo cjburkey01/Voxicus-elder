@@ -9,20 +9,20 @@ import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-public class ShaderProgram {
+public abstract class ShaderProgram {
 	
 	private final int program;
 	private final Map<Integer, Integer> shaders = new HashMap<>(); // Key of map is only used to verify that only <= 1 shader of each type is used.
 	private final Map<String, Integer> uniforms = new HashMap<>();
 	
-	public ShaderProgram() {
+	protected ShaderProgram() {
 		program = glCreateProgram();
 		if (program == MemoryUtil.NULL) {
 			throw new RuntimeException("Failed to create shader program");
 		}
 	}
 	
-	public final boolean addShader(int type, String source) {
+	protected final boolean addShader(int type, String source) {
 		if (source == null || source.trim().isEmpty()) {
 			Debug.error("Failed to add shader to shader program: the input source was null or empty");
 			return false;
@@ -40,7 +40,7 @@ public class ShaderProgram {
 		return true;
 	}
 	
-	public final boolean link() {
+	protected final boolean link() {
 		for (Entry<Integer, Integer> entry : shaders.entrySet()) {
 			glAttachShader(program, entry.getValue());
 		}
@@ -59,7 +59,7 @@ public class ShaderProgram {
 		return true;
 	}
 	
-	public void addUniform(String name) {
+	protected void addUniform(String name) {
 		int loc = glGetUniformLocation(program, name);
 		if (loc < 0) {
 			Debug.error("Uniform not found: " + name);
@@ -103,5 +103,7 @@ public class ShaderProgram {
 	public static void unbind() {
 		glUseProgram(0);
 	}
+	
+	public abstract boolean getHasError();
 	
 }

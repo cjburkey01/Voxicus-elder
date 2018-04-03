@@ -31,6 +31,10 @@ public class Time {
 		return deltaTime;
 	}
 	
+	public static float getDeltaTimeF() {
+		return (float) deltaTime;
+	}
+	
 	private static double getTimeSeconds() {
 		return Math.abs(System.nanoTime()) / 1000000000.0d;
 	}

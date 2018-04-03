@@ -1,47 +1,64 @@
 package com.cjburkey.voxicus;
 
-public class GameObject {
+import com.cjburkey.voxicus.component.ComponentHandler;
+import com.cjburkey.voxicus.component.ComponentTransform;
+
+public final class GameObject extends ComponentHandler {
 	
-	public final Transform transform = new Transform();
-	public Mesh mesh;
+	/**
+	 * An easier access to this object's transform
+	 */
+	public final ComponentTransform transform;
 	private boolean destroyed = false;
 	
 	public GameObject() {
+		transform = addComponent(new ComponentTransform());
 	}
 	
-	public GameObject(Transform transform) {
-		this.transform.copy(transform);
-	}
-	
-	public GameObject(Transform transform, Mesh mesh) {
-		this.transform.copy(transform);
-		this.mesh = mesh;
-	}
-	
-	public GameObject(Mesh mesh) {
-		this.mesh = mesh;
-	}
-	
-	public void update() {
+	public void onUpdateStart() {
 		if (destroyed) {
 			return;
 		}
+		super.onUpdateStart();
 	}
 	
-	public void render() {
+	public void onUpdate() {
 		if (destroyed) {
 			return;
 		}
-		if (mesh != null) {
-			mesh.render();
-		}
+		super.onUpdate();
 	}
 	
-	public void cleanup() {
+	public void onUpdateEnd() {
+		if (destroyed) {
+			return;
+		}
+		super.onUpdateEnd();
+	}
+	
+	public void onRenderStart() {
+		if (destroyed) {
+			return;
+		}
+		super.onRenderStart();
+	}
+	
+	public void onRender() {
+		if (destroyed) {
+			return;
+		}
+		super.onRender();
+	}
+	
+	public void onRenderEnd() {
+		if (destroyed) {
+			return;
+		}
+		super.onRenderEnd();
+	}
+	
+	public void destroy() {
 		destroyed = true;
-		if (mesh != null) {
-			mesh.destroy();
-		}
 	}
 	
 	public boolean getIsDestroyed() {

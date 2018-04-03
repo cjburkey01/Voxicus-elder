@@ -26,17 +26,23 @@ public class Debug {
 	}
 	
 	public static final void error(Object msg) {
-		logger.error(sanitize(msg));
+		error(msg, new Object[] { });
 	}
 	
 	public static final void error(Object msg, Object... param) {
+		if (Throwable.class.isAssignableFrom(msg.getClass())) {
+			error((Throwable) msg, true);
+			return;
+		}
 		logger.error(sanitize(msg), param);
 	}
 	
-	public static final void error(Throwable t) {
+	public static final void error(Throwable t, boolean exit) {
 		logger.error("An error occurred: " + sanitize(t.getMessage()));
 		t.printStackTrace();
-		System.exit(-1);
+		if (exit) {
+			System.exit(-1);
+		}
 	}
 	
 	private static final String sanitize(Object msg) {

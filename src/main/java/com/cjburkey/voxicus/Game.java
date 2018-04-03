@@ -1,7 +1,6 @@
 package com.cjburkey.voxicus;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.glfw.GLFW;
 
 public final class Game {
@@ -18,8 +17,7 @@ public final class Game {
 	public boolean resized;
 	private Window window;
 	private ShaderProgram shader;
-	public final World world = new World();
-	private boolean locked = true;
+	private final Scene world = new Scene();
 	
 	public void init() {
 		Debug.log("Initializing game");
@@ -29,7 +27,12 @@ public final class Game {
 		window.setSize(window.getScreenSize().x / 2, window.getScreenSize().y / 2, true);
 		window.setTitle("Voxicus " + VERSION);
 		window.show();
-		GLFW.glfwSetInputMode(window.getId(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+		
+		String glVersion = glGetString(GL_VERSION);
+		String glfwVersion = GLFW.glfwGetVersionString();
+		
+		Debug.log("OpenGL: {}", glVersion);
+		Debug.log("GLFW: {}", glfwVersion);
 	}
 	
 	public void start() {
@@ -37,25 +40,21 @@ public final class Game {
 		running = true;
 		
 		glEnable(GL_DEPTH_TEST);
-		glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+		glEnable(GL_CULL_FACE);
+		glFrontFace(GL_CCW);
+		glCullFace(GL_BACK);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
-		shader = new ShaderProgram();
-		if (!shader.addShader(GL_VERTEX_SHADER, Util.getTextFromResource("/res/voxicus/shader/terrainVertex.glsl"))) {
-			Debug.error("Failed to add terrain vertex shader");
+		shader = new ShaderTerrain();
+		if (shader.getHasError()) {
+			Debug.error("Failed to create terrain shader");
+			stop();
+			return;
 		}
-		if (!shader.addShader(GL_FRAGMENT_SHADER, Util.getTextFromResource("/res/voxicus/shader/terrainFragment.glsl"))) {
-			Debug.error("Failed to add terrain fragment shader");
-		}
-		if (!shader.link()) {
-			Debug.error("Failed to link terrain shader program");
-		}
-		shader.addUniform("projectionMatrix");
-		shader.addUniform("modelViewMatrix");
 		shader.bind();
 		Debug.log("Created terrain shader program");
 		
 		Input.init(window);
-		
 		INST.init();
 		
 		startGameLoop();
@@ -82,23 +81,17 @@ public final class Game {
 			frames = 0;
 		}
 		
-		if (Input.getIsKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
-			locked = !locked;
-			GLFW.glfwSetInputMode(window.getId(), GLFW.GLFW_CURSOR, (locked) ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
-		}
-		
 		INST.update();
 		world.update();
 		
 		window.preRender();
-		
 		INST.render();
 		world.render(shader);
-		
 		Input.update();
 		window.postRender();
+		
 		if (window.getShouldClose()) {
-			running = false;
+			stop();
 		}
 		if (resized) {
 			Debug.log("Window size changed to " + window.getWindowSize().x + "x" + window.getWindowSize().y);
@@ -126,7 +119,7 @@ public final class Game {
 			if (!running) {
 				break;
 			}
-			if (Time.getDeltaTime() < 1000000000l / 60l) {	// If we're going at more than 60fps, add a little slow-down (makes a 1000ish fps limit)
+			if (Time.getDeltaTime() < 1000000000l / 60l) {	// If we're going at more than 60fps, add a ~1ms pause (makes a 1000ish fps limit)
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e) {
@@ -134,6 +127,14 @@ public final class Game {
 				}
 			}
 		}
+	}
+	
+	public static Scene getWorld() {
+		return Voxicus.getGame().world;
+	}
+	
+	public static Window getWindow() {
+		return Voxicus.getGame().window;
 	}
 	
 }

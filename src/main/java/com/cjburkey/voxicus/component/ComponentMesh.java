@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.component;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -9,8 +9,9 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.List;
 import org.joml.Vector3f;
+import com.cjburkey.voxicus.Util;
 
-public final class Mesh {
+public final class ComponentMesh extends ObjectComponent {
 	
 	private final int vao;
 	private final int vbo;
@@ -19,14 +20,14 @@ public final class Mesh {
 	
 	private int elements = 0;
 	
-	public Mesh() {
+	public ComponentMesh() {
 		vao = glGenVertexArrays();
 		vbo = glGenBuffers();
 		ebo = glGenBuffers();
 		cbo = glGenBuffers();
 	}
 	
-	public void updateMesh(List<Vector3f> verts, List<Short> inds, List<Vector3f> colors) {
+	public void setMesh(List<Vector3f> verts, List<Short> inds, List<Vector3f> colors) {
 		elements = inds.size();
 		
 		FloatBuffer vertBuff = Util.vec3fBuffer(verts.toArray(new Vector3f[verts.size()]));
@@ -58,7 +59,7 @@ public final class Mesh {
 		unbindVertexArray();
 	}
 	
-	public void render() {
+	public void onRender() {
 		glBindVertexArray(vao);
 		bindElementBuffer();
 		glEnableVertexAttribArray(0);
