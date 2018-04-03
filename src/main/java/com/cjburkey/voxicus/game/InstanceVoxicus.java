@@ -1,5 +1,7 @@
 package com.cjburkey.voxicus.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -10,6 +12,7 @@ import com.cjburkey.voxicus.component.ComponentMouseLook;
 import com.cjburkey.voxicus.core.Debug;
 import com.cjburkey.voxicus.core.IInstance;
 import com.cjburkey.voxicus.core.Input;
+import com.cjburkey.voxicus.core.SemVer;
 import com.cjburkey.voxicus.core.Time;
 import com.cjburkey.voxicus.core.Util;
 import com.cjburkey.voxicus.graphic.MeshTexture;
@@ -20,86 +23,59 @@ public class InstanceVoxicus implements IInstance {
 	
 	private GameObject[] objs = new GameObject[100];
 	
-	private float a = 25.0f;
-	private float b = 5.0f;
-	private float min = -5.0f;
-	private float max = 5.0f;
+	// Test values
+	public float a = 25.0f;
+	public float b = 5.0f;
+	public float min = -5.0f;
+	public float max = 5.0f;
 	
 	private float t = 0.0f;
-	
 	private float delta = 2.0f;
 	
+	public String getName() {
+		return "Voxicus";
+	}
+	
+	public SemVer getVersion() {
+		return new SemVer(0, 0, 1, "alpha");
+	}
+	
 	public void init() {
-		/*MeshColor mesh = new MeshColor();
-		mesh.setMesh(Util.arrayToList(new Vector3f[] {
-			// Vertices
-			new Vector3f(-0.5f, 0.5f, 0.5f),	// 0
-			new Vector3f(-0.5f, -0.5f, 0.5f),	// 1
-			new Vector3f(0.5f, -0.5f, 0.5f),	// 2
-			new Vector3f(0.5f, 0.5f, 0.5f),		// 3
-			new Vector3f(-0.5f, 0.5f, -0.5f),	// 4
-			new Vector3f(-0.5f, -0.5f, -0.5f),	// 5
-			new Vector3f(0.5f, -0.5f, -0.5f),	// 6
-			new Vector3f(0.5f, 0.5f, -0.5f)		// 7
-		}), Util.arrayToList(new Short[] {
-			// Indices
-			0, 1, 2,	0, 2, 3,	// Front
-			6, 5, 4,	7, 6, 4,	// Back
-			3, 2, 6,	3, 6, 7,	// Right
-			4, 5, 1,	4, 1, 0,	// Left
-			4, 0, 3,	4, 3, 7,	// Top
-			2, 1, 5,	6, 2, 5		// Bottom
-		}), Util.arrayToList(new Vector3f[] {
-			// Colors
-			new Vector3f(1.0f, 0.0f, 0.0f),
-			new Vector3f(0.0f, 1.0f, 0.0f),
-			new Vector3f(1.0f, 1.0f, 0.0f),
-			new Vector3f(0.0f, 0.0f, 1.0f),
-			new Vector3f(1.0f, 0.0f, 1.0f),
-			new Vector3f(0.0f, 1.0f, 1.0f),
-			new Vector3f(1.0f, 1.0f, 1.0f),
-			new Vector3f(0.5f, 0.5f, 0.5f)
-		}));*/
-		
 		Texture texture = new Texture("/res/voxicus/texture/debug/test.png");
 		MeshTexture mesh = new MeshTexture();
-		mesh.setMesh(Util.arrayToList(new Vector3f[] {
-			new Vector3f(-0.5f, 0.5f, 0.0f),
-			new Vector3f(-0.5f, -0.5f, 0.0f),
-			new Vector3f(0.5f, -0.5f, 0.0f),
-			new Vector3f(0.5f, 0.5f, 0.0f)
-		}), Util.arrayToList(new Short[] {
-			0, 1, 2,
-			0, 2, 3
-		}), Util.arrayToList(new Vector2f[] {
-			new Vector2f(0.0f, 0.0f),
-			new Vector2f(0.0f, 1f),
-			new Vector2f(1f, 1f),
-			new Vector2f(1f, 0.0f)
-		}), texture);
 		
-		for (int y = 0; y < Math.sqrt(objs.length); y ++) {
-			for (int x = 0; x < Math.sqrt(objs.length); x ++) {
-				objs[y * (int) Math.sqrt(objs.length) + x] = Game.getWorld().addObject();
-				objs[y * (int) Math.sqrt(objs.length) + x].transform.position.set(x - (float) Math.sqrt(objs.length) / 2, 0.0f, y - (float) Math.sqrt(objs.length) / 2);
-				objs[y * (int) Math.sqrt(objs.length) + x].addComponent(new ComponentMesh(mesh));
-			}
-		}
+		List<Vector3f> v = new ArrayList<>();
+		List<Short> i = new ArrayList<>();
+		List<Vector2f> t = new ArrayList<>();
+		Util.addRect(v, i, t, new Vector3f(-0.5f, -0.5f, -0.5f), new Vector3f(1.0f, 2.0f, 3.0f));
+		mesh.setMesh(v, i, t, texture);
+		
+//		for (int y = 0; y < Math.sqrt(objs.length); y ++) {
+//			for (int x = 0; x < Math.sqrt(objs.length); x ++) {
+//				objs[y * (int) Math.sqrt(objs.length) + x] = Game.getWorld().addObject();
+//				objs[y * (int) Math.sqrt(objs.length) + x].transform.position.set(x - (float) Math.sqrt(objs.length) / 2, 0.0f, y - (float) Math.sqrt(objs.length) / 2);
+//				objs[y * (int) Math.sqrt(objs.length) + x].addComponent(new ComponentMesh(mesh));
+//			}
+//		}
+		
+		objs[0] = Game.getWorld().addObject();
+		objs[0].transform.position.zero();
+		objs[0].addComponent(new ComponentMesh(mesh));
 		
 		GameObject camObj = Game.getWorld().addObject();
 		camObj.addComponent(new ComponentCamera(Game.getWindow().getWindowSize())).setClearColor(new Vector3f(0.1f, 0.1f, 0.1f));
-		camObj.addComponent(new ComponentMouseLook()).setMouseLock(true).setPauseTimeOnFreeCursor(true).setPausedTimeScale(0.1d);
+		camObj.addComponent(new ComponentMouseLook()).setMouseLock(true).setPauseTimeOnFreeCursor(true).setPausedTimeScale(0.0d).setSmoothing(0.13f);
 		camObj.addComponent(new ComponentFreeMove()).doManualMove(new Vector3f(0.0f, 0.0f, 10.0f), false);
 	}
 	
 	public void update() {
 		t += Time.getDeltaTimeF();
 		
-		for (int y = 0; y < Math.sqrt(objs.length); y ++) {
-			for (int x = 0; x < Math.sqrt(objs.length); x ++) {
-				objs[y * (int) Math.sqrt(objs.length) + x].transform.position.y = Util.sin(min, max, b, (x + y) / (a / b) + t);
-			}
-		}
+//		for (int y = 0; y < Math.sqrt(objs.length); y ++) {
+//			for (int x = 0; x < Math.sqrt(objs.length); x ++) {
+//				objs[y * (int) Math.sqrt(objs.length) + x].transform.position.y = Util.sin(min, max, b, (x + y) / (a / b) + t);
+//			}
+//		}
 		
 		boolean p = false;
 		if (Input.getIsKeyDown(GLFW.GLFW_KEY_DOWN)) {

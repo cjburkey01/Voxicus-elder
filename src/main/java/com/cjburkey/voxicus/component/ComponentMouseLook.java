@@ -39,7 +39,7 @@ public class ComponentMouseLook extends ObjectComponent {
 	}
 	
 	private void updateRotation() {
-		rotation = Util.smoothDamp(rotation, goalRotation, rotationV, smoothing, Time.getDeltaTimeF());
+		rotation = Util.smoothDamp(rotation, goalRotation, rotationV, smoothing, Time.getPureDeltaTimeF());
 		getParentObj().transform.rotation.rotationXYZ(rotation.x * Util.DEG_RAD, rotation.y * Util.DEG_RAD, 0.0f);
 	}
 	

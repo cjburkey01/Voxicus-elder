@@ -23,6 +23,13 @@ public class Util {
 	public static float DEG_RAD = (float) Math.PI / 180.0f;
 	public static float RAD_DEG = 180.0f / (float) Math.PI;
 	
+	public static final Vector3f RIGHT = new Vector3f(1.0f, 0.0f, 0.0f);
+	public static final Vector3f UP = new Vector3f(0.0f, 1.0f, 0.0f);
+	public static final Vector3f FORWARD = new Vector3f(0.0f, 0.0f, -1.0f);
+	public static final Vector3f LEFT = neg(RIGHT);
+	public static final Vector3f DOWN = neg(UP);
+	public static final Vector3f BACK = neg(FORWARD);
+	
 	// -- IO -- //
 	
 	public static String getTextFromResource(String resPath) {
@@ -58,7 +65,14 @@ public class Util {
 		return stringOut.toString();
 	}
 	
-	// -- BUFFERS -- //
+	// -- BUFFERS and ARRAYS -- //
+	
+	public static <T> T[] fillArray(T[] array, T element) {
+		for (int i = 0; i < array.length; i ++) {
+			array[i] = element;
+		}
+		return array;
+	}
 	
 	public static float[] vector3fToArray(Vector3f[] vecs) {
 		float[] data = new float[vecs.length * 3];
@@ -316,6 +330,103 @@ public class Util {
 			}
 		}
 		return null;
+	}
+	
+	// -- MESHING -- //
+	
+	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, float size) {
+		addRect(verts, inds, uvs, corner, new Vector3f(size, size, size));
+	}
+	
+	/**
+	 * @param sides Represent FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM faces
+	 */
+	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, float size, Boolean[] sides) {
+		addRect(verts, inds, uvs, corner, new Vector3f(size, size, size), sides);
+	}
+	
+	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f size) {
+		addRect(verts, inds, uvs, corner, size, fillArray(new Boolean[6], true));
+	}
+	
+	public static void addSqQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f right, Vector3f up, float size) {
+		addRectQuad(verts, inds, uvs, corner, right, up, new Vector2f(size, size));
+	}
+	
+	/**
+	 * @param sides Represent FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM faces
+	 */
+	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f size, Boolean[] sides) {
+		if (sides.length < 1) {
+			return;
+		}
+		if (sides[0]) {
+			addRectQuad(verts, inds, uvs, corner, RIGHT, UP, new Vector2f(size.x, size.y));
+		}
+		if (sides.length < 2) {
+			return;
+		}
+		if (sides[1]) {
+			addRectQuad(verts, inds, uvs, add(corner, add(scalar(RIGHT, size.x), scalar(FORWARD, size.z))), LEFT, UP, new Vector2f(size.x, size.y));
+		}
+		if (sides.length < 3) {
+			return;
+		}
+		if (sides[2]) {
+			addRectQuad(verts, inds, uvs, add(corner, scalar(RIGHT, size.x)), FORWARD, UP, new Vector2f(size.z, size.y));
+		}
+		if (sides.length < 4) {
+			return;
+		}
+		if (sides[3]) {
+			addRectQuad(verts, inds, uvs, add(corner, scalar(FORWARD, size.z)), BACK, UP, new Vector2f(size.z, size.y));
+		}
+		if (sides.length < 5) {
+			return;
+		}
+		if (sides[4]) {
+			addRectQuad(verts, inds, uvs, add(corner, scalar(UP, size.y)), RIGHT, FORWARD, new Vector2f(size.x, size.z));
+		}
+		if (sides.length < 6) {
+			return;
+		}
+		if (sides[5]) {
+			addRectQuad(verts, inds, uvs, add(corner, scalar(FORWARD, size.z)), RIGHT, BACK, new Vector2f(size.x, size.z));
+		}
+	}
+	
+	public static void addRectQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f right, Vector3f up, Vector2f size) {
+		short index = (short) verts.size();
+		verts.add(new Vector3f(corner));
+		verts.add(add(corner, scalar(right, size.x)));
+		verts.add(add(corner, add(scalar(right, size.x), scalar(up, size.y))));
+		verts.add(add(corner, scalar(up, size.y)));
+		
+		inds.add(index);
+		inds.add((short) (index + 1));
+		inds.add((short) (index + 2));
+		inds.add(index);
+		inds.add((short) (index + 2));
+		inds.add((short) (index + 3));
+		
+		uvs.add(new Vector2f(0.0f, 1.0f));
+		uvs.add(new Vector2f(1.0f, 1.0f));
+		uvs.add(new Vector2f(1.0f, 0.0f));
+		uvs.add(new Vector2f(0.0f, 0.0f));
+	}
+	
+	// -- VECTOR UTILS -- //
+	
+	public static Vector3f add(Vector3f a, Vector3f b) {
+		return a.add(b, new Vector3f(0.0f, 0.0f, 0.0f));
+	}
+	
+	public static Vector3f neg(Vector3f a) {
+		return a.negate(new Vector3f(0.0f, 0.0f, 0.0f));
+	}
+	
+	public static Vector3f scalar(Vector3f a, float b) {
+		return a.mul(b, new Vector3f(0.0f, 0.0f, 0.0f));
 	}
 	
 }

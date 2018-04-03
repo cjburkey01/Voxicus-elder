@@ -38,7 +38,7 @@ public final class Game {
 		
 		window = new Window(true, 4);
 		window.setSize(window.getScreenSize().x / 2, window.getScreenSize().y / 2, true);
-		window.setTitle("Voxicus " + VERSION);
+		window.setTitle(INST.getName() + ' ' + INST.getVersion());
 		window.show();
 		
 		String glVersion = glGetString(GL_VERSION);

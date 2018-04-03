@@ -50,11 +50,13 @@ public class ComponentHandler {
 			return null;
 		}
 		if (component.parent != null) {
-			
+			Debug.warn("Component already exists on another object");
+			return component;
 		}
 		for (Component comp : components) {
 			if (comp.getClass().equals(component.getClass())) {
-				return null;
+				Debug.warn("A component of that type already exists on this object");
+				return component;
 			}
 		}
 		
