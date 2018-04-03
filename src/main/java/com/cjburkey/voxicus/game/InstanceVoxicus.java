@@ -12,7 +12,7 @@ import com.cjburkey.voxicus.world.GameObject;
 
 public class InstanceVoxicus implements IInstance {
 	
-	private GameObject[] objs = new GameObject[1000];
+	private GameObject[] objs = new GameObject[100];
 	
 	private float a = 25.0f;
 	private float b = 5.0f;
@@ -53,10 +53,12 @@ public class InstanceVoxicus implements IInstance {
 			new Vector3f(0.5f, 0.5f, 0.5f)
 		}));
 		
-		for (int i = 0; i < objs.length; i ++) {
-			objs[i] = Game.getWorld().addObject();
-			objs[i].transform.position.set(i - objs.length / 2, 0.0f, 0.0f);
-			objs[i].addComponent(mesh);
+		for (int y = 0; y < Math.sqrt(objs.length); y ++) {
+			for (int x = 0; x < Math.sqrt(objs.length); x ++) {
+				objs[y * (int) Math.sqrt(objs.length) + x] = Game.getWorld().addObject();
+				objs[y * (int) Math.sqrt(objs.length) + x].transform.position.set(x - (float) Math.sqrt(objs.length) / 2, 0.0f, y - (float) Math.sqrt(objs.length) / 2);
+				objs[y * (int) Math.sqrt(objs.length) + x].addComponent(mesh);
+			}
 		}
 		
 		GameObject camObj = Game.getWorld().addObject();
@@ -68,8 +70,10 @@ public class InstanceVoxicus implements IInstance {
 	public void update() {
 		t += Time.getDeltaTimeF();
 		
-		for (int i = 0; i < objs.length; i ++) {
-			objs[i].transform.position.y = Util.sin(min, max, b, i / (a / b) + t);
+		for (int y = 0; y < Math.sqrt(objs.length); y ++) {
+			for (int x = 0; x < Math.sqrt(objs.length); x ++) {
+				objs[y * (int) Math.sqrt(objs.length) + x].transform.position.y = Util.sin(min, max, b, (x + y) / (a / b) + t);
+			}
 		}
 	}
 	
