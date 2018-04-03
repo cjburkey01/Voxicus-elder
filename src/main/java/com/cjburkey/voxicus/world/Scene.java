@@ -5,8 +5,6 @@ import java.util.List;
 import com.cjburkey.voxicus.component.Component;
 import com.cjburkey.voxicus.component.ComponentCamera;
 import com.cjburkey.voxicus.core.Debug;
-import com.cjburkey.voxicus.core.Transformations;
-import com.cjburkey.voxicus.graphic.ShaderProgram;
 
 public class Scene {
 	
@@ -33,7 +31,7 @@ public class Scene {
 		objs.forEach(obj -> obj.onUpdateEnd());
 	}
 	
-	public void render(ShaderProgram shader) {
+	public void render() {
 		if (ComponentCamera.main == null) {
 			camWasNull = true;
 			Debug.warn("Camera not found in scene");
@@ -44,21 +42,14 @@ public class Scene {
 		}
 		
 		objs.forEach(obj -> {
-			setModelView(shader, obj);
 			obj.onRenderStart();
 		});
 		objs.forEach(obj -> {
-			setModelView(shader, obj);
 			obj.onRender();
 		});
 		objs.forEach(obj -> {
-			setModelView(shader, obj);
 			obj.onRenderEnd();
 		});
-	}
-	
-	private void setModelView(ShaderProgram shader, GameObject obj) {
-		shader.setUniform("modelViewMatrix", Transformations.getModelView(ComponentCamera.main.getParentObj().transform, obj.transform));
 	}
 	
 	public <T extends Component> T getComponentInScene(Class<T> type) {

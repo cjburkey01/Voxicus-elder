@@ -50,6 +50,20 @@ public class Time {
 		return deltaTime * timeScale;
 	}
 	
+	/**
+	 * Does not abide by the time scale
+	 */
+	public static float getPureDeltaTimeF() {
+		return (float) getPureDeltaTime();
+	}
+	
+	/**
+	 * Does not abide by the time scale
+	 */
+	public static double getPureDeltaTime() {
+		return deltaTime;
+	}
+	
 	private static double getTimeSeconds() {
 		return Math.abs(System.nanoTime()) / 1000000000.0d;
 	}

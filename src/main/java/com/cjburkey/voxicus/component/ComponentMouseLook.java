@@ -31,7 +31,7 @@ public class ComponentMouseLook extends ObjectComponent {
 		}
 		
 		rotChange.set(Input.getMouseDelta().y, Input.getMouseDelta().x);
-		rotChange.mul(sensitivity * (float) Time.getDeltaTime());
+		rotChange.mul(sensitivity * (float) Time.getPureDeltaTimeF());
 		goalRotation.add(rotChange);
 		goalRotation.x = Util.clamp(goalRotation.x, -90.0f, 90.0f);
 		

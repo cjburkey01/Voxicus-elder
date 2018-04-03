@@ -16,7 +16,7 @@ public class ComponentFreeMove extends ObjectComponent {
 	private final Vector3f posV = new Vector3f();
 	
 	public void onUpdate() {
-		float deltaTimeSpeed = Time.getDeltaTimeF() * ((Input.getIsKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) ? (fastSpeed) : (normalSpeed));
+		float deltaTimeSpeed = Time.getPureDeltaTimeF() * ((Input.getIsKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) ? (fastSpeed) : (normalSpeed));
 		Vector3f dir = new Vector3f(0.0f, 0.0f, 0.0f);
 		if (Input.getIsKeyDown(GLFW.GLFW_KEY_W)) {
 			dir.z -= 1.0f;
@@ -46,7 +46,7 @@ public class ComponentFreeMove extends ObjectComponent {
 		goalPos.add(dir);
 		
 		ComponentTransform p = getParentObj().transform;
-		p.position.set(Util.smoothDamp(p.position, goalPos, posV, smoothing, Time.getDeltaTimeF()));
+		p.position.set(Util.smoothDamp(p.position, goalPos, posV, smoothing, Time.getPureDeltaTimeF()));
 	}
 	
 	public ComponentFreeMove setNormalSpeed(float normalSpeed) {

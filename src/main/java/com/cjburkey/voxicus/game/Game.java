@@ -9,8 +9,8 @@ import com.cjburkey.voxicus.core.Input;
 import com.cjburkey.voxicus.core.SemVer;
 import com.cjburkey.voxicus.core.Time;
 import com.cjburkey.voxicus.core.Transformations;
+import com.cjburkey.voxicus.graphic.ShaderColor;
 import com.cjburkey.voxicus.graphic.ShaderProgram;
-import com.cjburkey.voxicus.graphic.ShaderTerrain;
 import com.cjburkey.voxicus.graphic.Window;
 import com.cjburkey.voxicus.world.Scene;
 
@@ -27,7 +27,7 @@ public final class Game {
 
 	public boolean resized;
 	private Window window;
-	private ShaderProgram shader;
+	public ShaderProgram shaderColored;
 	private final Scene world = new Scene();
 	
 	public void init() {
@@ -56,14 +56,14 @@ public final class Game {
 		glCullFace(GL_BACK);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
-		shader = new ShaderTerrain();
-		if (shader.getHasError()) {
-			Debug.error("Failed to create terrain shader");
+		shaderColored = new ShaderColor();
+		if (shaderColored.getHasError()) {
+			Debug.error("Failed to create color shader");
 			stop();
 			return;
 		}
-		shader.bind();
-		Debug.log("Created terrain shader program");
+		shaderColored.bind();
+		Debug.log("Created color shader program");
 		
 		Input.init(window);
 		INST.init();
@@ -96,7 +96,7 @@ public final class Game {
 		
 		window.preRender();
 		INST.render();
-		world.render(shader);
+		world.render();
 		Input.update();
 		window.postRender();
 		
@@ -107,7 +107,7 @@ public final class Game {
 			Debug.log("Window size changed to " + window.getWindowSize().x + "x" + window.getWindowSize().y);
 			glViewport(0, 0, window.getWindowSize().x, window.getWindowSize().y);
 			Transformations.updateProjection(90.0f, window.getWindowSize().x, window.getWindowSize().y, 0.01f, 1000.0f);
-			shader.setUniform("projectionMatrix", Transformations.PROJECTION);
+			shaderColored.setUniform("projectionMatrix", Transformations.PROJECTION);
 			resized = false;
 		}
 	}

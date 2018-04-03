@@ -1,13 +1,17 @@
 package com.cjburkey.voxicus.game;
 
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 import com.cjburkey.voxicus.component.ComponentCamera;
 import com.cjburkey.voxicus.component.ComponentFreeMove;
 import com.cjburkey.voxicus.component.ComponentMesh;
 import com.cjburkey.voxicus.component.ComponentMouseLook;
+import com.cjburkey.voxicus.core.Debug;
 import com.cjburkey.voxicus.core.IInstance;
+import com.cjburkey.voxicus.core.Input;
 import com.cjburkey.voxicus.core.Time;
 import com.cjburkey.voxicus.core.Util;
+import com.cjburkey.voxicus.graphic.MeshColored;
 import com.cjburkey.voxicus.world.GameObject;
 
 public class InstanceVoxicus implements IInstance {
@@ -21,8 +25,10 @@ public class InstanceVoxicus implements IInstance {
 	
 	private float t = 0.0f;
 	
+	private float delta = 2.0f;
+	
 	public void init() {
-		ComponentMesh mesh = new ComponentMesh();
+		MeshColored mesh = new MeshColored();
 		mesh.setMesh(Util.arrayToList(new Vector3f[] {
 			// Vertices
 			new Vector3f(-0.5f, 0.5f, 0.5f),	// 0
@@ -57,7 +63,7 @@ public class InstanceVoxicus implements IInstance {
 			for (int x = 0; x < Math.sqrt(objs.length); x ++) {
 				objs[y * (int) Math.sqrt(objs.length) + x] = Game.getWorld().addObject();
 				objs[y * (int) Math.sqrt(objs.length) + x].transform.position.set(x - (float) Math.sqrt(objs.length) / 2, 0.0f, y - (float) Math.sqrt(objs.length) / 2);
-				objs[y * (int) Math.sqrt(objs.length) + x].addComponent(mesh);
+				objs[y * (int) Math.sqrt(objs.length) + x].addComponent(new ComponentMesh(mesh));
 			}
 		}
 		
@@ -74,6 +80,23 @@ public class InstanceVoxicus implements IInstance {
 			for (int x = 0; x < Math.sqrt(objs.length); x ++) {
 				objs[y * (int) Math.sqrt(objs.length) + x].transform.position.y = Util.sin(min, max, b, (x + y) / (a / b) + t);
 			}
+		}
+		
+		boolean p = false;
+		if (Input.getIsKeyDown(GLFW.GLFW_KEY_DOWN)) {
+			Time.setTimeScale(Time.getTimeScale() - ((Input.getIsKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) ? (delta * 10) :  (delta)) * Time.getPureDeltaTime());
+			p = true;
+		}
+		if (Input.getIsKeyDown(GLFW.GLFW_KEY_UP)) {
+			Time.setTimeScale(Time.getTimeScale() + ((Input.getIsKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) ? (delta * 10) :  (delta)) * Time.getPureDeltaTime());
+			p = true;
+		}
+		if (Input.getIsKeyPressed(GLFW.GLFW_KEY_P)) {
+			Time.setTimeScale(1.0d);
+			p = true;
+		}
+		if (p) {
+			Debug.log("Time scale: {}", Time.getTimeScale());
 		}
 	}
 	

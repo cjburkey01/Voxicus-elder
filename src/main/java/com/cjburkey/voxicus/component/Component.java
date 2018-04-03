@@ -3,29 +3,67 @@ package com.cjburkey.voxicus.component;
 public abstract class Component {
 	
 	protected final ComponentHandler parent = null;
+	private boolean destroyed = false;
 	
-	public void onInit() {
+	protected final void doDestroy() {
+		destroyed = true;
+		onDestroy();
 	}
 	
-	public void onUpdateStart() {
+	protected final void doInit() {
+		onInit();
 	}
 	
-	public void onUpdate() {
+	protected final void doUpdateStart() {
+		onUpdateStart();
 	}
 	
-	public void onUpdateEnd() {
+	protected final void doUpdate() {
+		onUpdate();
 	}
 	
-	public void onRenderStart() {
+	protected final void doUpdateEnd() {
+		onUpdateEnd();
 	}
 	
-	public void onRender() {
+	protected final void doRenderStart() {
+		onRenderStart();
 	}
 	
-	public void onRenderEnd() {
+	protected final void doRender() {
+		onRender();
 	}
 	
-	public void onDestroy() {
+	protected final void doRenderEnd() {
+		onRenderEnd();
+	}
+	
+	protected void onInit() {
+	}
+	
+	protected void onUpdateStart() {
+	}
+	
+	protected void onUpdate() {
+	}
+	
+	private void onUpdateEnd() {
+	}
+	
+	protected void onRenderStart() {
+	}
+	
+	protected void onRender() {
+	}
+	
+	protected void onRenderEnd() {
+	}
+	
+	protected void onDestroy() {
+	}
+	
+	public boolean getIsDestroyed() {
+		return destroyed;
 	}
 	
 	public final ComponentHandler getParent() {

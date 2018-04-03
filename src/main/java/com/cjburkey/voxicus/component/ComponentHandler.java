@@ -11,35 +11,35 @@ public class ComponentHandler {
 	private List<Component> components = new ArrayList<Component>();
 	
 	public void onInit() {
-		components.forEach(c -> c.onInit());
+		components.forEach(c -> c.doInit());
 	}
 	
 	public void onUpdateStart() {
-		components.forEach(c -> c.onUpdateStart());
+		components.forEach(c -> c.doUpdateStart());
 	}
 	
 	public void onUpdate() {
-		components.forEach(c -> c.onUpdate());
+		components.forEach(c -> c.doUpdate());
 	}
 	
 	public void onUpdateEnd() {
-		components.forEach(c -> c.onUpdateEnd());
+		components.forEach(c -> c.doUpdateEnd());
 	}
 	
 	public void onRenderStart() {
-		components.forEach(c -> c.onRenderStart());
+		components.forEach(c -> c.doRenderStart());
 	}
 	
 	public void onRender() {
-		components.forEach(c -> c.onRender());
+		components.forEach(c -> c.doRender());
 	}
 	
 	public void onRenderEnd() {
-		components.forEach(c -> c.onRenderEnd());
+		components.forEach(c -> c.doRenderEnd());
 	}
 	
 	public void onDestroy() {
-		components.forEach(c -> c.onDestroy());
+		components.forEach(c -> c.doDestroy());
 	}
 	
 	/**
@@ -48,6 +48,9 @@ public class ComponentHandler {
 	public final <T extends Component> T addComponent(T component) {
 		if (component == null) {
 			return null;
+		}
+		if (component.parent != null) {
+			
 		}
 		for (Component comp : components) {
 			if (comp.getClass().equals(component.getClass())) {
