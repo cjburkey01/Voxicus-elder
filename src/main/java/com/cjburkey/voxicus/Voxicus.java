@@ -1,6 +1,8 @@
 package com.cjburkey.voxicus;
 
 import org.apache.logging.log4j.LogManager;
+import com.cjburkey.voxicus.core.Debug;
+import com.cjburkey.voxicus.game.Game;
 
 public final class Voxicus {
 	

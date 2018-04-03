@@ -1,10 +1,13 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.game;
 
 import org.joml.Vector3f;
 import com.cjburkey.voxicus.component.ComponentCamera;
 import com.cjburkey.voxicus.component.ComponentFreeMove;
 import com.cjburkey.voxicus.component.ComponentMesh;
 import com.cjburkey.voxicus.component.ComponentMouseLook;
+import com.cjburkey.voxicus.core.IInstance;
+import com.cjburkey.voxicus.core.Util;
+import com.cjburkey.voxicus.world.GameObject;
 
 public class InstanceVoxicus implements IInstance {
 	

@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.core;
 
 public interface IInstance {
 	

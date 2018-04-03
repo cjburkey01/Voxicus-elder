@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.core;
 
 import org.joml.Vector3i;
 

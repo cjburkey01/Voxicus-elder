@@ -2,9 +2,9 @@ package com.cjburkey.voxicus.component;
 
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
-import com.cjburkey.voxicus.Input;
-import com.cjburkey.voxicus.Time;
-import com.cjburkey.voxicus.Util;
+import com.cjburkey.voxicus.core.Input;
+import com.cjburkey.voxicus.core.Time;
+import com.cjburkey.voxicus.core.Util;
 
 public class ComponentFreeMove extends ObjectComponent {
 	

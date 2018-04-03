@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.graphic;
 
 import static org.lwjgl.opengl.GL20.*;
 import java.nio.FloatBuffer;
@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import com.cjburkey.voxicus.core.Debug;
 
 public abstract class ShaderProgram {
 	

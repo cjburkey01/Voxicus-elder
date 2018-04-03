@@ -1,9 +1,12 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.world;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.cjburkey.voxicus.component.Component;
 import com.cjburkey.voxicus.component.ComponentCamera;
+import com.cjburkey.voxicus.core.Debug;
+import com.cjburkey.voxicus.core.Transformations;
+import com.cjburkey.voxicus.graphic.ShaderProgram;
 
 public class Scene {
 	

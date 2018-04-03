@@ -1,6 +1,6 @@
 package com.cjburkey.voxicus.component;
 
-import com.cjburkey.voxicus.GameObject;
+import com.cjburkey.voxicus.world.GameObject;
 
 public abstract class ObjectComponent extends Component {
 	

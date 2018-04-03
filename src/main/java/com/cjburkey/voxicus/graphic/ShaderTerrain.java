@@ -1,6 +1,8 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.graphic;
 
 import static org.lwjgl.opengl.GL20.*;
+import com.cjburkey.voxicus.core.Debug;
+import com.cjburkey.voxicus.core.Util;
 
 public class ShaderTerrain extends ShaderProgram {
 	

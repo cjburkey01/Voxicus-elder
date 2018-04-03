@@ -9,7 +9,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.List;
 import org.joml.Vector3f;
-import com.cjburkey.voxicus.Util;
+import com.cjburkey.voxicus.core.Util;
 
 public final class ComponentMesh extends ObjectComponent {
 	

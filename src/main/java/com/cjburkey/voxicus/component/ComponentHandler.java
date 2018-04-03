@@ -3,8 +3,8 @@ package com.cjburkey.voxicus.component;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import com.cjburkey.voxicus.Debug;
-import com.cjburkey.voxicus.Util;
+import com.cjburkey.voxicus.core.Debug;
+import com.cjburkey.voxicus.core.Util;
 
 public class ComponentHandler {
 	

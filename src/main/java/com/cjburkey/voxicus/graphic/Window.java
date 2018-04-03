@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.graphic;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
+import com.cjburkey.voxicus.Voxicus;
 
 public class Window {
 	

@@ -3,8 +3,8 @@ package com.cjburkey.voxicus.component;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
-import com.cjburkey.voxicus.Debug;
-import com.cjburkey.voxicus.Transformations;
+import com.cjburkey.voxicus.core.Debug;
+import com.cjburkey.voxicus.core.Transformations;
 
 public final class ComponentCamera extends ObjectComponent {
 	

@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.core;
 
 import static org.lwjgl.system.MemoryUtil.*;
 import java.io.BufferedReader;

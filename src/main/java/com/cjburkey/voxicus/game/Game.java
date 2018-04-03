@@ -1,7 +1,18 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.game;
 
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.glfw.GLFW;
+import com.cjburkey.voxicus.Voxicus;
+import com.cjburkey.voxicus.core.Debug;
+import com.cjburkey.voxicus.core.IInstance;
+import com.cjburkey.voxicus.core.Input;
+import com.cjburkey.voxicus.core.SemVer;
+import com.cjburkey.voxicus.core.Time;
+import com.cjburkey.voxicus.core.Transformations;
+import com.cjburkey.voxicus.graphic.ShaderProgram;
+import com.cjburkey.voxicus.graphic.ShaderTerrain;
+import com.cjburkey.voxicus.graphic.Window;
+import com.cjburkey.voxicus.world.Scene;
 
 public final class Game {
 	

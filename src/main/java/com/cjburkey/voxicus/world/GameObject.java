@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus;
+package com.cjburkey.voxicus.world;
 
 import com.cjburkey.voxicus.component.ComponentHandler;
 import com.cjburkey.voxicus.component.ComponentTransform;
