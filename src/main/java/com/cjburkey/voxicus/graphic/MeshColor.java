@@ -7,13 +7,14 @@ import static org.lwjgl.system.MemoryUtil.*;
 import java.nio.FloatBuffer;
 import java.util.List;
 import org.joml.Vector3f;
+import com.cjburkey.voxicus.Voxicus;
 import com.cjburkey.voxicus.core.Util;
 
-public class MeshColored extends Mesh {
+public class MeshColor extends Mesh {
 	
 	private int cbo;
 	
-	public MeshColored() {
+	public MeshColor() {
 		cbo = glGenBuffers();
 	}
 	
@@ -31,6 +32,10 @@ public class MeshColored extends Mesh {
 		unbindVertexBuffer();
 		memFree(colBuff);
 		unbindVertexArray();
+	}
+	
+	protected ShaderProgram getShader() {
+		return Voxicus.getGame().shaderColored;
 	}
 	
 	public void onDestroy() {

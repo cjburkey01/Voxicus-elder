@@ -2,6 +2,7 @@ package com.cjburkey.voxicus.graphic;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -18,7 +19,7 @@ public class Window {
 	private final long window;
 	private final Vector2i size = new Vector2i(0, 0);
 	
-	public Window() {
+	public Window(boolean vsync, int samples) {
 		if (!glfwInit) {
 			glfwInit = glfwInit();
 			if (!glfwInit) {
@@ -34,6 +35,7 @@ public class Window {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+		glfwWindowHint(GLFW_SAMPLES, samples);
 		
 		window = glfwCreateWindow(300, 300, "", NULL, NULL);
 		if (window == NULL) {
@@ -45,7 +47,11 @@ public class Window {
 			caps = GL.createCapabilities();
 		}
 		glfwSetFramebufferSizeCallback(window, (win, w, h) -> onResize(new Vector2i(w, h)));
-		glfwSwapInterval(1);
+		glfwSwapInterval((vsync) ? 1 : 0);
+		
+		if (samples > 0) {
+			glEnable(GL_MULTISAMPLE);
+		}
 	}
 	
 	public void setTitle(String title) {

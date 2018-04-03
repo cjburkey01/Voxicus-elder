@@ -11,6 +11,7 @@ import com.cjburkey.voxicus.core.Time;
 import com.cjburkey.voxicus.core.Transformations;
 import com.cjburkey.voxicus.graphic.ShaderColor;
 import com.cjburkey.voxicus.graphic.ShaderProgram;
+import com.cjburkey.voxicus.graphic.ShaderTexture;
 import com.cjburkey.voxicus.graphic.Window;
 import com.cjburkey.voxicus.world.Scene;
 
@@ -28,13 +29,14 @@ public final class Game {
 	public boolean resized;
 	private Window window;
 	public ShaderProgram shaderColored;
+	public ShaderProgram shaderTextured;
 	private final Scene world = new Scene();
 	
 	public void init() {
 		Debug.log("Initializing game");
 		Time.init();
 		
-		window = new Window();
+		window = new Window(true, 4);
 		window.setSize(window.getScreenSize().x / 2, window.getScreenSize().y / 2, true);
 		window.setTitle("Voxicus " + VERSION);
 		window.show();
@@ -56,7 +58,7 @@ public final class Game {
 		glCullFace(GL_BACK);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
-		shaderColored = new ShaderColor();
+		shaderColored = new ShaderColor("res/voxicus/shader", "colorVertex", "colorFragment");
 		if (shaderColored.getHasError()) {
 			Debug.error("Failed to create color shader");
 			stop();
@@ -64,6 +66,15 @@ public final class Game {
 		}
 		shaderColored.bind();
 		Debug.log("Created color shader program");
+		
+		shaderTextured = new ShaderTexture("res/voxicus/shader", "textureVertex", "textureFragment");
+		if (shaderTextured.getHasError()) {
+			Debug.error("Failed to create texture shader");
+			stop();
+			return;
+		}
+		shaderTextured.bind();
+		Debug.log("Created texture shader program");
 		
 		Input.init(window);
 		INST.init();

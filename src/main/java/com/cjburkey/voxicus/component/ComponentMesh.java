@@ -1,23 +1,23 @@
 package com.cjburkey.voxicus.component;
 
-import com.cjburkey.voxicus.graphic.MeshColored;
+import com.cjburkey.voxicus.graphic.Mesh;
 
 public final class ComponentMesh extends ObjectComponent {
 	
-	private MeshColored mesh;
+	private Mesh mesh;
 	
 	public ComponentMesh() {
 	}
 	
-	public ComponentMesh(MeshColored mesh) {
+	public ComponentMesh(Mesh mesh) {
 		setMesh(mesh);
 	}
 	
-	public void setMesh(MeshColored mesh) {
+	public void setMesh(Mesh mesh) {
 		this.mesh = mesh;
 	}
 	
-	public MeshColored getMesh() {
+	public Mesh getMesh() {
 		return mesh;
 	}
 	

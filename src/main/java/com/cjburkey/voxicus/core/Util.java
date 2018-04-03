@@ -70,12 +70,30 @@ public class Util {
 		return data;
 	}
 	
+	public static float[] vector2fToArray(Vector2f[] vecs) {
+		float[] data = new float[vecs.length * 2];
+		for (int i = 0; i < vecs.length; i ++) {
+			data[i * 2] = vecs[i].x;
+			data[i * 2 + 1] = vecs[i].y;
+		}
+		return data;
+	}
+	
 	/**
 	 * <b><u><i>MAKE SURE TO DELTE THIS BUFFER WHEN IT IS NO LONGER USED</i></u></b>
 	 */
 	public static FloatBuffer vec3fBuffer(Vector3f[] vecs) {
 		FloatBuffer buffer = memAllocFloat(vecs.length * 3);
 		buffer.put(vector3fToArray(vecs)).flip();
+		return buffer;
+	}
+	
+	/**
+	 * <b><u><i>MAKE SURE TO DELTE THIS BUFFER WHEN IT IS NO LONGER USED</i></u></b>
+	 */
+	public static FloatBuffer vec2fBuffer(Vector2f[] vecs) {
+		FloatBuffer buffer = memAllocFloat(vecs.length * 2);
+		buffer.put(vector2fToArray(vecs)).flip();
 		return buffer;
 	}
 	

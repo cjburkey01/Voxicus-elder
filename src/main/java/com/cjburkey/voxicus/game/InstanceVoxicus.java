@@ -1,5 +1,6 @@
 package com.cjburkey.voxicus.game;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import com.cjburkey.voxicus.component.ComponentCamera;
@@ -11,7 +12,8 @@ import com.cjburkey.voxicus.core.IInstance;
 import com.cjburkey.voxicus.core.Input;
 import com.cjburkey.voxicus.core.Time;
 import com.cjburkey.voxicus.core.Util;
-import com.cjburkey.voxicus.graphic.MeshColored;
+import com.cjburkey.voxicus.graphic.MeshTexture;
+import com.cjburkey.voxicus.graphic.Texture;
 import com.cjburkey.voxicus.world.GameObject;
 
 public class InstanceVoxicus implements IInstance {
@@ -28,7 +30,7 @@ public class InstanceVoxicus implements IInstance {
 	private float delta = 2.0f;
 	
 	public void init() {
-		MeshColored mesh = new MeshColored();
+		/*MeshColor mesh = new MeshColor();
 		mesh.setMesh(Util.arrayToList(new Vector3f[] {
 			// Vertices
 			new Vector3f(-0.5f, 0.5f, 0.5f),	// 0
@@ -57,7 +59,24 @@ public class InstanceVoxicus implements IInstance {
 			new Vector3f(0.0f, 1.0f, 1.0f),
 			new Vector3f(1.0f, 1.0f, 1.0f),
 			new Vector3f(0.5f, 0.5f, 0.5f)
-		}));
+		}));*/
+		
+		Texture texture = new Texture("/res/voxicus/texture/debug/test.png");
+		MeshTexture mesh = new MeshTexture();
+		mesh.setMesh(Util.arrayToList(new Vector3f[] {
+			new Vector3f(-0.5f, 0.5f, 0.0f),
+			new Vector3f(-0.5f, -0.5f, 0.0f),
+			new Vector3f(0.5f, -0.5f, 0.0f),
+			new Vector3f(0.5f, 0.5f, 0.0f)
+		}), Util.arrayToList(new Short[] {
+			0, 1, 2,
+			0, 2, 3
+		}), Util.arrayToList(new Vector2f[] {
+			new Vector2f(0.0f, 0.0f),
+			new Vector2f(0.0f, 1f),
+			new Vector2f(1f, 1f),
+			new Vector2f(1f, 0.0f)
+		}), texture);
 		
 		for (int y = 0; y < Math.sqrt(objs.length); y ++) {
 			for (int x = 0; x < Math.sqrt(objs.length); x ++) {

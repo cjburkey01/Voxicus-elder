@@ -9,7 +9,6 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.List;
 import org.joml.Vector3f;
-import com.cjburkey.voxicus.Voxicus;
 import com.cjburkey.voxicus.component.ComponentCamera;
 import com.cjburkey.voxicus.component.ComponentTransform;
 import com.cjburkey.voxicus.core.Transformations;
@@ -66,8 +65,8 @@ public abstract class Mesh {
 			return;
 		}
 		
-		Voxicus.getGame().shaderColored.bind();
-		Voxicus.getGame().shaderColored.setUniform("modelViewMatrix", Transformations.getModelView(ComponentCamera.main.getParentObj().transform, parent));
+		getShader().bind();
+		getShader().setUniform("modelViewMatrix", Transformations.getModelView(ComponentCamera.main.getParentObj().transform, parent));
 		
 		bindVertexArray();
 		bindElementBuffer();
@@ -84,6 +83,8 @@ public abstract class Mesh {
 	protected void onRenderCall() {
 		glDrawElements(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, 0);
 	}
+	
+	protected abstract ShaderProgram getShader();
 	
 	public void onDestroy() {
 		hasMesh = false;
