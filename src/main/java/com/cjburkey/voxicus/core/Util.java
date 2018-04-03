@@ -5,12 +5,14 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -114,6 +116,101 @@ public class Util {
 	}
 	
 	// -- MATHS -- //
+	
+	public static float meanf(List<Float> input) {
+		return meanf(input.toArray(new Float[input.size()]));
+	}
+	
+	public static float meanf(Float... input) {
+		float sum = 0.0f;
+		for (float i : input) {
+			sum += i;
+		}
+		return sum / input.length;
+	}
+	
+	public static double meand(List<Double> input) {
+		return meand(input.toArray(new Double[input.size()]));
+	}
+	
+	public static double meand(Double... input) {
+		double sum = 0.0f;
+		for (double i : input) {
+			sum += i;
+		}
+		return sum / input.length;
+	}
+	
+	public static float sin(float min, float max, float fullTime, float time) {
+		float d = max - min;
+		return min + (d / 2.0f) + (d * ((float) Math.sin(((time % fullTime) / fullTime) * 360.0f * DEG_RAD) / 2.0f));
+	}
+	
+	public static float cos(float min, float max, float fullTime, float time) {
+		float d = max - min;
+		return min + (d / 2.0f) + (d * ((float) Math.cos(((time % fullTime) / fullTime) * 360.0f * DEG_RAD) / 2.0f));
+	}
+	
+	/**
+	 * Unsafe, only use with parental supervision.
+	 * Is ~25x slower than just using the function itself, use <i>Math.sin(...)</i> rather than <i>Util.getRangeTrigr("sin", ...)</i>, etc;
+	 * there is no reason to use this function.
+	 */
+	public static float getRangeTrigr(String name, float min, float max, float fullTime, float time) {
+		float d = max - min;
+		return min + (d / 2.0f) + (d * ((float) getUnsafeTrigFunction(name, double.class, ((time % fullTime) / fullTime) * 360.0f * DEG_RAD) / 2.0f));
+	}
+	
+	/**
+	 * This is pretty unsafe, I wouldn't trust it with my child
+	 */
+	private static double getUnsafeTrigFunction(String name, Class<?> param, float val) {
+		try {
+			Method m = Math.class.getMethod(name, param);
+			Object obj = m.invoke(null, val);
+			if (obj == null || !(obj instanceof Double || obj instanceof Float)) {
+				Debug.error("Failed to execute trig function in Math class: {}. The method did not return a double or float", name);
+				return Double.MIN_VALUE / 2.0f;
+			}
+			return (Double) obj;
+		} catch (Exception e) {
+			Debug.error("Failed to located trig function in Math class: {}", name);
+			Debug.error(e, false);
+			return Double.MIN_VALUE / 2.0f;
+		}
+	}
+	
+	/**
+	 * Inclusive random between the minimum and maximum
+	 */
+	public static int randomRange(int min, int max, Random random) {
+		return randomRange(min, max, random, true);
+	}
+	
+	public static int randomRange(int min, int max, Random random, boolean inclusive) {
+		if (max < min) {
+			int tmp = min;
+			min = max;
+			max = tmp;
+		}
+		return min + random.nextInt(max - min + ((inclusive) ? 1 : 0));
+	}
+	
+	/**
+	 * Inclusive random between the minimum and maximum
+	 */
+	public static float randomRange(float min, float max, Random random) {
+		return randomRange(min, max, random, true);
+	}
+	
+	public static float randomRange(float min, float max, Random random, boolean inclusive) {
+		if (max < min) {
+			float tmp = min;
+			min = max;
+			max = tmp;
+		}
+		return (min + (random.nextFloat() * (max - min))) - ((inclusive) ? 0.0f : 0.000001f);
+	}
 	
 	public static float clamp(float in, float min, float max) {
 		if (in < min) {

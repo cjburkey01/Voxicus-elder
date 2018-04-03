@@ -22,7 +22,7 @@ public final class Game {
 	private static boolean running;
 	private static int fps;
 	
-	private float fpsCheck = 0.0f;
+	private float lastFpsCheck = 0.0f;
 	private int frames = 0;
 
 	public boolean resized;
@@ -83,12 +83,11 @@ public final class Game {
 	}
 	
 	private void update() {
-		fpsCheck += Time.getDeltaTime();
 		frames ++;
-		if (fpsCheck >= 1.0d) {
+		if (lastFpsCheck < Time.getTimeF() - 1.0f) {
 			fps = frames;
 			Debug.log("Frames last second: {}", fps);
-			fpsCheck = 0.0f;
+			lastFpsCheck = Time.getTimeF();
 			frames = 0;
 		}
 		

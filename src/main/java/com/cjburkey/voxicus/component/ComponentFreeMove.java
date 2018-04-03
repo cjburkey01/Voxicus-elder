@@ -64,4 +64,12 @@ public class ComponentFreeMove extends ObjectComponent {
 		return this;
 	}
 	
+	public ComponentFreeMove doManualMove(Vector3f pos, boolean smooth) {
+		goalPos.set(pos);
+		if (!smooth) {
+			getParentObj().transform.position.set(pos);
+		}
+		return this;
+	}
+	
 }

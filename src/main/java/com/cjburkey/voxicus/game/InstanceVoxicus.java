@@ -6,14 +6,20 @@ import com.cjburkey.voxicus.component.ComponentFreeMove;
 import com.cjburkey.voxicus.component.ComponentMesh;
 import com.cjburkey.voxicus.component.ComponentMouseLook;
 import com.cjburkey.voxicus.core.IInstance;
+import com.cjburkey.voxicus.core.Time;
 import com.cjburkey.voxicus.core.Util;
 import com.cjburkey.voxicus.world.GameObject;
 
 public class InstanceVoxicus implements IInstance {
 	
-	private GameObject obj1;
-	private GameObject obj2;
-	private GameObject obj3;
+	private GameObject[] objs = new GameObject[1000];
+	
+	private float a = 25.0f;
+	private float b = 5.0f;
+	private float min = -5.0f;
+	private float max = 5.0f;
+	
+	private float t = 0.0f;
 	
 	public void init() {
 		ComponentMesh mesh = new ComponentMesh();
@@ -47,25 +53,24 @@ public class InstanceVoxicus implements IInstance {
 			new Vector3f(0.5f, 0.5f, 0.5f)
 		}));
 		
-		obj1 = Game.getWorld().addObject();
-		obj2 = Game.getWorld().addObject();
-		obj3 = Game.getWorld().addObject();
-		
-		obj1.transform.position.set(1.0f, 3.0f, -10.0f);
-		obj2.transform.position.set(1.38f, 0.0f, -1.0f);
-		obj3.transform.position.set(-3.1f, 0.0f, -3.0f);
-		
-		obj1.addComponent(mesh);
-		obj2.addComponent(mesh);
-		obj3.addComponent(mesh);
+		for (int i = 0; i < objs.length; i ++) {
+			objs[i] = Game.getWorld().addObject();
+			objs[i].transform.position.set(i - objs.length / 2, 0.0f, 0.0f);
+			objs[i].addComponent(mesh);
+		}
 		
 		GameObject camObj = Game.getWorld().addObject();
 		camObj.addComponent(new ComponentCamera(Game.getWindow().getWindowSize())).setClearColor(new Vector3f(0.1f, 0.1f, 0.1f));
-		camObj.addComponent(new ComponentMouseLook()).setMouseLock(true);
-		camObj.addComponent(new ComponentFreeMove());
+		camObj.addComponent(new ComponentMouseLook()).setMouseLock(true).setPauseTimeOnFreeCursor(true).setPausedTimeScale(0.1d);
+		camObj.addComponent(new ComponentFreeMove()).doManualMove(new Vector3f(0.0f, 0.0f, 10.0f), false);
 	}
 	
 	public void update() {
+		t += Time.getDeltaTimeF();
+		
+		for (int i = 0; i < objs.length; i ++) {
+			objs[i].transform.position.y = Util.sin(min, max, b, i / (a / b) + t);
+		}
 	}
 	
 	public void render() {
