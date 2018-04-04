@@ -373,23 +373,23 @@ public class Util {
 	
 	// -- MESHING -- //
 	
-	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, float size) {
-		addRect(verts, inds, uvs, corner, new Vector3f(size, size, size));
+	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Bounds uv, float size) {
+		addRect(verts, inds, uvs, corner, uv, new Vector3f(size, size, size));
 	}
 	
 	/**
 	 * @param sides Represent FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM faces
 	 */
-	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, float size, Boolean[] sides) {
-		addRect(verts, inds, uvs, corner, UV_DEF, new Vector3f(size, size, size), sides);
+	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Bounds uv, Vector3f corner, float size, Boolean[] sides) {
+		addRect(verts, inds, uvs, corner, uv, new Vector3f(size, size, size), sides);
 	}
 	
-	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f size) {
-		addRect(verts, inds, uvs, corner, UV_DEF, size, fillArray(new Boolean[6], true));
+	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Bounds uv, Vector3f size) {
+		addRect(verts, inds, uvs, corner, uv, size, fillArray(new Boolean[6], true));
 	}
 	
-	public static void addSqQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f right, Vector3f up, float size) {
-		addRectQuad(verts, inds, uvs, corner, right, up, UV_DEF, new Vector2f(size, size));
+	public static void addSqQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f right, Vector3f up, Bounds uv, float size) {
+		addRectQuad(verts, inds, uvs, corner, right, up, uv, new Vector2f(size, size));
 	}
 	
 	/**

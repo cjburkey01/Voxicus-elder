@@ -1,19 +1,17 @@
 package com.cjburkey.voxicus.graphic;
 
 import static org.lwjgl.opengl.GL20.*;
-import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.joml.Matrix4f;
-import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import com.cjburkey.voxicus.core.Debug;
 
 public abstract class ShaderProgram {
 	
 	private final int program;
-	private final Map<Integer, Integer> shaders = new HashMap<>(); // Key of map is only used to verify that only <= 1 shader of each type is used.
+	private final Map<Integer, Integer> shaders = new HashMap<>(); // Map is only used to verify that only <= 1 shader of each type is used.
 	private final Map<String, Integer> uniforms = new HashMap<>();
 	
 	protected ShaderProgram() {
@@ -74,11 +72,9 @@ public abstract class ShaderProgram {
 			Debug.error("Failed to find uniform: " + name);
 			return;
 		}
-		try (MemoryStack stack = MemoryStack.stackPush()) {
-			FloatBuffer fb = stack.mallocFloat(16);
-			mat.get(fb);
-			glUniformMatrix4fv(uniforms.get(name), false, fb);
-		}
+		float[] fb = new float[16];
+		mat.get(fb);
+		glUniformMatrix4fv(uniforms.get(name), false, fb);
 	}
 	
 	public void setUniform(String name, int val) {

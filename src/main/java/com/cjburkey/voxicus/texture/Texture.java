@@ -1,6 +1,7 @@
-package com.cjburkey.voxicus.graphic;
+package com.cjburkey.voxicus.texture;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -11,10 +12,17 @@ import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
 public class Texture {
 	
-	private boolean isCreated;
-	private int texture;
+	private String path;
+	protected boolean isCreated;
+	protected int texture;
 	
-	public Texture(String path) {
+	public Texture(String path, Object... data) {
+		glActiveTexture(GL_TEXTURE0);
+		this.path = path;
+		init(data);
+	}
+	
+	protected void init(Object... data) {
 		try {
 			InputStream is = Texture.class.getResourceAsStream(path);
 			if (is == null) {
@@ -27,7 +35,7 @@ public class Texture {
 			
 			texture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, texture);
-			glPixelStorei(GL_TEXTURE_2D, 1);	// 1 byte per component
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	// 1 byte per component
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// Pixel perfect (with mipmapping)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buff);
@@ -35,7 +43,7 @@ public class Texture {
 			
 			isCreated = true;
 		} catch (Exception e) {
-			Debug.error("Unable to ");
+			Debug.error("Unable to create texture from path: {}", path);
 			Debug.error(e, true);
 		}
 	}
@@ -50,9 +58,6 @@ public class Texture {
 	}
 	
 	public void bindTexture() {
-		if (!isCreated) {
-			return;
-		}
 		glBindTexture(GL_TEXTURE_2D, texture);
 	}
 	

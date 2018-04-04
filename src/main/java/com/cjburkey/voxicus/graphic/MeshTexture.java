@@ -11,6 +11,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import com.cjburkey.voxicus.Voxicus;
 import com.cjburkey.voxicus.core.Util;
+import com.cjburkey.voxicus.texture.Texture;
 
 public class MeshTexture extends Mesh {
 	
@@ -38,7 +39,6 @@ public class MeshTexture extends Mesh {
 	}
 	
 	public void setMesh(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Texture texture) {
-		glActiveTexture(GL_TEXTURE0);
 		setTexture(texture);
 		setMesh(verts, inds, uvs);
 	}

@@ -4,30 +4,34 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public final class ComponentTransform extends Component {
+public final class ComponentTransform extends ObjectComponent {
 	
+	public String name;
 	public final Vector3f position = new Vector3f(0.0f, 0.0f, 0.0f);
 	public final Quaternionf rotation = new Quaternionf();
 	public final Vector3f scale = new Vector3f(1.0f, 1.0f, 1.0f);
 	
-	public ComponentTransform() {
+	public ComponentTransform(String name) {
+		this.name = name;
 	}
 	
-	public ComponentTransform(ComponentTransform copy) {
+	public ComponentTransform(String name, ComponentTransform copy) {
+		this(name);
 		copy(copy);
 	}
 	
-	public ComponentTransform(Vector3f position) {
+	public ComponentTransform(String name, Vector3f position) {
+		this(name);
 		this.position.set(position);
 	}
 	
-	public ComponentTransform(Vector3f position, Quaternionf rotation) {
-		this(position);
+	public ComponentTransform(String name, Vector3f position, Quaternionf rotation) {
+		this(name, position);
 		this.rotation.set(rotation);
 	}
 	
-	public ComponentTransform(Vector3f position, Quaternionf rotation, Vector3f scale) {
-		this(position, rotation);
+	public ComponentTransform(String name, Vector3f position, Quaternionf rotation, Vector3f scale) {
+		this(name, position, rotation);
 		this.scale.set(scale);
 	}
 	

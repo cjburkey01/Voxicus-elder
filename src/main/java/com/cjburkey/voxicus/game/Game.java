@@ -17,12 +17,15 @@ import com.cjburkey.voxicus.graphic.ShaderProgram;
 import com.cjburkey.voxicus.graphic.ShaderTexture;
 import com.cjburkey.voxicus.graphic.ShaderTextureUI;
 import com.cjburkey.voxicus.graphic.Window;
+import com.cjburkey.voxicus.texture.AtlasHandler;
 import com.cjburkey.voxicus.world.Scene;
 
 public final class Game {
 	
 	public static final SemVer VERSION = new SemVer(0, 0, 1, "alpha");
 	public static final IInstance INST = new InstanceVoxicus();
+	
+	public static int maxTextureSize;
 	
 	private static boolean running;
 	private static int fps;
@@ -35,6 +38,7 @@ public final class Game {
 	public ShaderProgram shaderColored;
 	public ShaderProgram shaderTextured;
 	public ShaderProgram shaderTexturedUI;
+	private AtlasHandler atlasHandler;
 	private final Scene world = new Scene();
 	private final EventSystem globalEventHandler = new EventSystem();
 	
@@ -42,17 +46,15 @@ public final class Game {
 		Debug.log("Initializing game");
 		Time.init();
 		
-		window = new Window(true, 4);
+		window = new Window(true, 1);
 		window.setSize(window.getScreenSize().x / 2, window.getScreenSize().y / 2, true);
 		window.setTitle(INST.getName() + ' ' + INST.getVersion());
 		window.show();
 		
-		String glVersion = glGetString(GL_VERSION);
-		String glfwVersion = GLFW.glfwGetVersionString();
+		Debug.log("OpenGL: {}", glGetString(GL_VERSION));
+		Debug.log("GLFW: {}", GLFW.glfwGetVersionString());
+		Debug.log("Maximum Texture Size: {}^2", maxTextureSize = glGetInteger(GL_MAX_TEXTURE_SIZE));
 		
-		Debug.log("OpenGL: {}", glVersion);
-		Debug.log("GLFW: {}", glfwVersion);
-
 		Debug.log("Loading data types");
 		DataHandler.scanTypes(DataType.class);
 	}
@@ -60,7 +62,7 @@ public final class Game {
 	public void start() {
 		Debug.log("Starting game");
 		running = true;
-
+		
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
@@ -97,6 +99,10 @@ public final class Game {
 		Debug.log("Created textured ui shader program");
 		
 		Input.init(window);
+		
+		INST.preinit();
+		atlasHandler = new AtlasHandler();
+		atlasHandler.gatherTextures();
 		INST.init();
 		
 		startGameLoop();
@@ -138,9 +144,6 @@ public final class Game {
 			Debug.log("Window size changed to " + window.getWindowSize().x + "x" + window.getWindowSize().y);
 			glViewport(0, 0, window.getWindowSize().x, window.getWindowSize().y);
 			Transformations.updateProjection(90.0f, window.getWindowSize().x, window.getWindowSize().y, 0.01f, 1000.0f);
-			shaderColored.setUniform("projectionMatrix", Transformations.PROJECTION);
-			shaderTextured.setUniform("projectionMatrix", Transformations.PROJECTION);
-			shaderTexturedUI.setUniform("projectionMatrix", Transformations.ORTHOGRAPHIC);
 			resized = false;
 		}
 	}

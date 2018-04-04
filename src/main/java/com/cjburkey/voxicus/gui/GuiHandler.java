@@ -32,6 +32,8 @@ public class GuiHandler {
 				i --;
 			}
 		}
+		shader.bind();
+		shader.setUniform("projectionMatrix", Transformations.ORTHOGRAPHIC);
 		elements.forEach(e -> {
 			Transformations.updateModelOrthographics(e.getBounds().getMin(), e.getRotation(), e.getScale());
 			shader.setUniform("guiMatrix", Transformations.MODEL_ORTHOGRAPHIC);

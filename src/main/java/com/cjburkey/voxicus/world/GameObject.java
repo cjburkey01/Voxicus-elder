@@ -11,8 +11,8 @@ public final class GameObject extends ComponentHandler {
 	public final ComponentTransform transform;
 	private boolean destroyed = false;
 	
-	public GameObject() {
-		transform = addComponent(new ComponentTransform());
+	public GameObject(String name) {
+		transform = addComponent(new ComponentTransform(name));
 	}
 	
 	public void onUpdateStart() {

@@ -87,6 +87,7 @@ public abstract class Mesh {
 	}
 	
 	protected void onUniform(ComponentTransform parent) {
+		getShader().setUniform("projectionMatrix", Transformations.PROJECTION);
 		getShader().setUniform("modelViewMatrix", Transformations.getModelView(ComponentCamera.main.getParentObj().transform, parent));
 	}
 	

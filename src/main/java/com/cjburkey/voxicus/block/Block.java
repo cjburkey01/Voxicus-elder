@@ -1,11 +1,10 @@
 package com.cjburkey.voxicus.block;
 
-import com.cjburkey.voxicus.core.Bounds;
-import com.cjburkey.voxicus.core.Util;
+import com.cjburkey.voxicus.resource.Resource;
 
 public class Block {
 	
-	public final Bounds uvBounds = Util.UV_DEF;
+	public final Resource texture = new Resource("voxicus", "texture/terrain/main.png");
 	
 	public boolean isFullBlock(BlockState state) {
 		return true;

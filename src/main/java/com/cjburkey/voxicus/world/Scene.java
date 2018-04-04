@@ -22,8 +22,8 @@ public class Scene {
 		active = this;
 	}
 	
-	public GameObject addObject() {
-		GameObject obj = new GameObject();
+	public GameObject addObject(String name) {
+		GameObject obj = new GameObject(name);
 		objs.add(obj);
 		obj.onInit();
 		return obj;

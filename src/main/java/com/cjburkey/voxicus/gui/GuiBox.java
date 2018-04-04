@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 import com.cjburkey.voxicus.core.Bounds;
 import com.cjburkey.voxicus.core.Util;
 import com.cjburkey.voxicus.graphic.MeshTextureUI;
-import com.cjburkey.voxicus.graphic.Texture;
+import com.cjburkey.voxicus.texture.Texture;
 
 public class GuiBox extends GuiElement {
 	
