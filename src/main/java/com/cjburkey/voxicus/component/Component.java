@@ -4,14 +4,24 @@ public abstract class Component {
 	
 	protected final ComponentHandler parent = null;
 	private boolean destroyed = false;
+	private boolean hasInit = false;
 	
 	protected final void doDestroy() {
 		destroyed = true;
+		doRemove();
 		onDestroy();
 	}
 	
 	protected final void doInit() {
+		if (hasInit) {
+			return;
+		}
+		hasInit = true;
 		onInit();
+	}
+	
+	protected final void doRemove() {
+		onRemove();
 	}
 	
 	protected final void doUpdateStart() {
@@ -41,6 +51,9 @@ public abstract class Component {
 	protected void onInit() {
 	}
 	
+	protected void onRemove() {
+	}
+	
 	protected void onUpdateStart() {
 	}
 	
@@ -62,12 +75,16 @@ public abstract class Component {
 	protected void onDestroy() {
 	}
 	
-	public boolean getIsDestroyed() {
+	public final boolean getIsDestroyed() {
 		return destroyed;
 	}
 	
 	public final ComponentHandler getParent() {
 		return parent;
+	}
+	
+	public final boolean getHasInit() {
+		return hasInit;
 	}
 	
 }

@@ -4,7 +4,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import com.cjburkey.voxicus.core.Bounds;
 import com.cjburkey.voxicus.core.Util;
-import com.cjburkey.voxicus.graphic.MeshTextureUI;
+import com.cjburkey.voxicus.mesh.MeshTextureUI;
 import com.cjburkey.voxicus.texture.Texture;
 
 public class GuiBox extends GuiElement {
@@ -36,7 +36,7 @@ public class GuiBox extends GuiElement {
 	}
 	
 	public void onRender(GuiHandler parent) {
-		mesh.onRender(null);	// We may pass null because MeshTextureUI overrides the method that uses it
+		mesh.onRender();
 	}
 	
 	public void onRemove(GuiHandler parent) {

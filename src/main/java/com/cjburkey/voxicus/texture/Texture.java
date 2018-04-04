@@ -12,7 +12,7 @@ import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
 public class Texture {
 	
-	private String path;
+	protected final String path;
 	protected boolean isCreated;
 	protected int texture;
 	

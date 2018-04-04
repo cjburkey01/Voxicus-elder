@@ -8,9 +8,21 @@ import com.cjburkey.voxicus.core.Util;
 
 public class ComponentHandler {
 	
+	private List<Component> addQueue = new ArrayList<Component>();
+	private List<Component> remQueue = new ArrayList<Component>();
 	private List<Component> components = new ArrayList<Component>();
 	
 	public void onInit() {
+		while (!addQueue.isEmpty()) {
+			components.add(addQueue.get(0));
+			addQueue.get(0).doInit();
+			addQueue.remove(0);
+		}
+		while (!remQueue.isEmpty()) {
+			components.remove(remQueue.get(0));
+			remQueue.get(0).doRemove();
+			remQueue.remove(0);
+		}
 		components.forEach(c -> c.doInit());
 	}
 	
@@ -69,7 +81,8 @@ public class ComponentHandler {
 			parentField.setAccessible(true);
 			parentField.set(component, this);
 			//parentField.setInt(parentField, parentField.getModifiers() & ~Modifier.FINAL);
-			return ((components.add(component)) ? (component) : (null));
+			addQueue.add(component);
+			return component;
 		} catch (Exception e) {
 			Debug.error("Failed to set component parent: " + component.getClass());
 			Debug.error(e, false);
@@ -98,7 +111,7 @@ public class ComponentHandler {
 		if (comp == null) {
 			return null;
 		}
-		components.remove(comp);
+		remQueue.add(comp);
 		return comp;
 	}
 	

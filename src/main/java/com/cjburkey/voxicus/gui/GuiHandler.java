@@ -3,7 +3,7 @@ package com.cjburkey.voxicus.gui;
 import java.util.ArrayList;
 import java.util.List;
 import com.cjburkey.voxicus.core.Transformations;
-import com.cjburkey.voxicus.graphic.ShaderProgram;
+import com.cjburkey.voxicus.shader.ShaderProgram;
 
 public class GuiHandler {
 	

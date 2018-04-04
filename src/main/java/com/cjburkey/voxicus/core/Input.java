@@ -4,7 +4,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector2f;
-import com.cjburkey.voxicus.graphic.Window;
 
 public class Input {
 	

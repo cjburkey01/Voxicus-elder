@@ -3,7 +3,6 @@ package com.cjburkey.voxicus.chunk;
 import org.joml.Vector3i;
 import com.cjburkey.voxicus.block.Block;
 import com.cjburkey.voxicus.block.BlockState;
-import com.cjburkey.voxicus.core.Util;
 
 public class Chunk {
 	
@@ -37,23 +36,14 @@ public class Chunk {
 	}
 	
 	public boolean posInChunk(Vector3i pos) {
-		return !(pos.x < 0 || pos.x >= 16 || pos.y < 0 || pos.y >= 16 || pos.z < 0 || pos.z >= 16);
+		return !(pos.x < 0 || pos.x >= SIZE || pos.y < 0 || pos.y >= SIZE || pos.z < 0 || pos.z >= SIZE);
 	}
 	
 	// Z major major
 	// Y major
 	// X minor
-	public int getIndex(Vector3i pos) {
+	private int getIndex(Vector3i pos) {
 		return pos.z * SIZE * SIZE + pos.y * SIZE + pos.x;
-	}
-	
-	public Vector3i getPos(int index) {
-		Vector3i out = new Vector3i();
-		out.z = Util.floorDiv(index, SIZE * SIZE);
-		index -= out.z * SIZE * SIZE;
-		out.y = Util.floorDiv(index, SIZE);
-		out.x = index - out.y * SIZE;
-		return out;
 	}
 	
 	public Vector3i getChunkPos() {

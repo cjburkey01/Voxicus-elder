@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus.graphic;
+package com.cjburkey.voxicus.mesh;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -9,10 +9,8 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.List;
 import org.joml.Vector3f;
-import com.cjburkey.voxicus.component.ComponentCamera;
-import com.cjburkey.voxicus.component.ComponentTransform;
-import com.cjburkey.voxicus.core.Transformations;
 import com.cjburkey.voxicus.core.Util;
+import com.cjburkey.voxicus.shader.ShaderProgram;
 
 public abstract class Mesh {
 	
@@ -60,15 +58,10 @@ public abstract class Mesh {
 	/**
 	 * Note: This should not be overridden unless absolutely necessary; override <i>onRenderCall()</i> instead.
 	 */
-	public void onRender(ComponentTransform parent) {
+	public void onRender() {
 		if (!hasMesh) {
 			return;
 		}
-		
-		if (getShader() != null) {
-			getShader().bind();
-		}
-		onUniform(parent);
 		
 		bindVertexArray();
 		bindElementBuffer();
@@ -80,18 +73,17 @@ public abstract class Mesh {
 	}
 	
 	/**
-	 * Replace or enhance the <i>glDrawElements()</i> function, or add before/after actions and <i>super.onRenderCall()</i>to permit default behavior.
+	 * Replace or enhance the {@code glDrawElements()} function, or add before/after actions and {@code super.onRenderCall()} to permit default behavior.
 	 */
 	protected void onRenderCall() {
 		glDrawElements(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, 0);
 	}
 	
-	protected void onUniform(ComponentTransform parent) {
-		getShader().setUniform("projectionMatrix", Transformations.PROJECTION);
-		getShader().setUniform("modelViewMatrix", Transformations.getModelView(ComponentCamera.main.getParentObj().transform, parent));
-	}
+	public abstract ShaderProgram getShader();
 	
-	protected abstract ShaderProgram getShader();
+	public boolean getShouldAutoUniform() {
+		return true;
+	}
 	
 	public void onDestroy() {
 		hasMesh = false;

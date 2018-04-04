@@ -1,36 +1,26 @@
 package com.cjburkey.voxicus.game;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.lwjgl.glfw.GLFW;
-import com.cjburkey.voxicus.block.Block;
-import com.cjburkey.voxicus.chunk.Chunk;
+import com.cjburkey.voxicus.block.Blocks;
+import com.cjburkey.voxicus.chunk.World;
 import com.cjburkey.voxicus.component.ComponentCamera;
 import com.cjburkey.voxicus.component.ComponentFreeMove;
-import com.cjburkey.voxicus.component.ComponentMesh;
 import com.cjburkey.voxicus.component.ComponentMouseLook;
-import com.cjburkey.voxicus.core.Bounds;
 import com.cjburkey.voxicus.core.Debug;
 import com.cjburkey.voxicus.core.IInstance;
 import com.cjburkey.voxicus.core.Input;
 import com.cjburkey.voxicus.core.SemVer;
 import com.cjburkey.voxicus.core.Time;
-import com.cjburkey.voxicus.core.Util;
 import com.cjburkey.voxicus.event.EventRegistryTexture;
-import com.cjburkey.voxicus.graphic.MeshTexture;
-import com.cjburkey.voxicus.gui.GuiBox;
+import com.cjburkey.voxicus.generation.ChunkGeneratorOverworld;
 import com.cjburkey.voxicus.resource.Resource;
-import com.cjburkey.voxicus.texture.AtlasHandler;
 import com.cjburkey.voxicus.world.GameObject;
-import com.cjburkey.voxicus.world.Scene;
 
 public class InstanceVoxicus implements IInstance {
 	
-	private Chunk chunk = new Chunk(new Vector3i());
-	private Block block = new Block();
+	private World world;
 	
 	private float timeChangeSpeed = 2.0f;
 	
@@ -44,52 +34,71 @@ public class InstanceVoxicus implements IInstance {
 	
 	public void preinit() {
 		Game.getGlobalEventHandler().addListener(EventRegistryTexture.class, e -> {
-			e.addTexture(new Resource("voxicus", "texture/terrain/main.png"));
+			e.addTexture(new Resource("voxicus", "texture/terrain/blockStone.png"));
+			e.addTexture(new Resource("voxicus", "texture/terrain/blockGrass.png"));
+			e.addTexture(new Resource("voxicus", "texture/terrain/blockDirt.png"));
+			e.addTexture(new Resource("voxicus", "texture/terrain/blockGrass2.png"));
 			e.addTexture(new Resource("voxicus", "texture/gui/box.png"));
 		});
+		
+		Blocks.registerBlocks();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void init() {
-		MeshTexture mesh = new MeshTexture();
+		world = new World(0, new ChunkGeneratorOverworld());
+		world.spawnAround(new Vector3i().zero(), 5);
+//		Chunk z = world.getAndGenerateChunk(new Vector3i().zero());
+//		Scene.getActive().addObject("ChunkZ").addComponent(new ComponentChunk(z));
 		
-		for (int z = 0; z < Chunk.SIZE; z ++) {
-			for (int y = 0; y < Chunk.SIZE; y ++) {
-				for (int x = 0; x < Chunk.SIZE; x ++) {
-					chunk.setBlock(new Vector3i(x, y, z), block);
-				}
-			}
-		}
-		
-		List<Vector3f> verts = new ArrayList<>();
-		List<Short> inds = new ArrayList<>();
-		List<Vector2f> uvs = new ArrayList<>();
-		for (int z = 0; z < Chunk.SIZE; z ++) {
-			for (int y = 0; y < Chunk.SIZE; y ++) {
-				for (int x = 0; x < Chunk.SIZE; x ++) {
-					boolean drawAtXp1 = chunk.getIsTransparentBlockAt(new Vector3i(x + 1, y, z));
-					boolean drawAtXm1 = chunk.getIsTransparentBlockAt(new Vector3i(x - 1, y, z));
-					boolean drawAtZp1 = chunk.getIsTransparentBlockAt(new Vector3i(x, y, z + 1));
-					boolean drawAtZm1 = chunk.getIsTransparentBlockAt(new Vector3i(x, y, z - 1));
-					boolean drawAtYp1 = chunk.getIsTransparentBlockAt(new Vector3i(x, y + 1, z));
-					boolean drawAtYm1 = chunk.getIsTransparentBlockAt(new Vector3i(x, y - 1, z));
-					Util.addCube(verts, inds, uvs, AtlasHandler.instance.getTextureBounds(block.texture), new Vector3f(x, y, z), 1.0f, new Boolean[] {
-						drawAtZp1, drawAtZm1, drawAtXp1, drawAtXm1, drawAtYp1, drawAtYm1
-					});
-				}
-			}
-		}
-		
-		mesh.setMesh(verts, inds, uvs, AtlasHandler.instance.getTexture());
-		GameObject chunkObj = Game.getWorld().addObject("Chunk");
-		chunkObj.transform.position.zero();
-		chunkObj.addComponent(new ComponentMesh(mesh));
+//		MeshTextureArray mesh = new MeshTextureArray();
+//		
+//		List<Vector3f> verts = new ArrayList<>();
+//		List<Short> inds = new ArrayList<>();
+//		List<Vector2f> uvs = new ArrayList<>();
+//		List<Integer> tex = new ArrayList<>();
+//		
+//		Util.addCube(
+//				verts,
+//				inds,
+//				uvs,
+//				tex,
+//				Util.UV_DEF,
+//				Util.arrayToList(new Integer[] { 0, 0, 0, 0, 0, 0 }),
+//				new Vector3f(0.0f, 0.0f, 0.0f),
+//				1.0f);
+//		
+//		Util.addCube(
+//				verts,
+//				inds,
+//				uvs,
+//				tex,
+//				Util.UV_DEF,
+//				Util.arrayToList(new Integer[] { 1, 1, 1, 1, 1, 1 }),
+//				new Vector3f(5.0f, 0.0f, 0.0f),
+//				1.0f);
+//		
+//		Util.addCube(
+//				verts,
+//				inds,
+//				uvs,
+//				tex,
+//				Util.UV_DEF,
+//				Util.arrayToList(new Integer[] { 2, 2, 2, 2, 2, 2 }),
+//				new Vector3f(10.0f, 0.0f, 0.0f),
+//				1.0f);
+//		
+//		mesh.setMesh(verts, inds, uvs, tex, AtlasHandler.instance.getTexture());
+//		GameObject chunkObj = Game.getWorld().addObject("Chunk");
+//		chunkObj.transform.position.zero();
+//		chunkObj.addComponent(new ComponentMesh(mesh));
 		
 		GameObject camObj = Game.getWorld().addObject("Camera");
 		camObj.addComponent(new ComponentCamera(Game.getWindow().getWindowSize())).setClearColor(new Vector3f(0.1f, 0.1f, 0.1f));
 		camObj.addComponent(new ComponentMouseLook()).setMouseLock(true).setPauseTimeOnFreeCursor(true).setPausedTimeScale(0.0d).setSmoothing(0.13f);
 		camObj.addComponent(new ComponentFreeMove()).doManualMove(new Vector3f(0.0f, 0.0f, 10.0f), false);
 		
-		Scene.getActive().getGuiHandler().addElement(new GuiBox(new Bounds(10.0f, 10.0f, 100.0f, 100.0f), AtlasHandler.instance.getTexture()));
+//		Scene.getActive().getGuiHandler().addElement(new GuiBox(new Bounds(10.0f, 10.0f, 100.0f, 100.0f), AtlasHandler.instance.getTexture()));
 	}
 	
 	public void update() {

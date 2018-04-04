@@ -1,6 +1,7 @@
 package com.cjburkey.voxicus.component;
 
-import com.cjburkey.voxicus.graphic.Mesh;
+import com.cjburkey.voxicus.core.Transformations;
+import com.cjburkey.voxicus.mesh.Mesh;
 
 public final class ComponentMesh extends ObjectComponent {
 	
@@ -23,7 +24,12 @@ public final class ComponentMesh extends ObjectComponent {
 	
 	public void onRender() {
 		if (mesh != null) {
-			mesh.onRender(getParentObj().transform);
+			if (mesh.getShader() != null && mesh.getShouldAutoUniform()) {
+				mesh.getShader().bind();
+				mesh.getShader().setUniform("projectionMatrix", Transformations.PROJECTION);
+				mesh.getShader().setUniform("modelViewMatrix", Transformations.getModelView(ComponentCamera.main.getParentObj().transform, getParentObj().transform));
+			}
+			mesh.onRender();
 		}
 	}
 	

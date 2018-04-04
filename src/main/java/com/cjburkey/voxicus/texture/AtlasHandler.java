@@ -2,9 +2,6 @@ package com.cjburkey.voxicus.texture;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.joml.Vector2f;
-import org.joml.Vector2i;
-import com.cjburkey.voxicus.core.Bounds;
 import com.cjburkey.voxicus.core.Debug;
 import com.cjburkey.voxicus.event.EventRegistryTexture;
 import com.cjburkey.voxicus.game.Game;
@@ -17,9 +14,8 @@ public class AtlasHandler {
 	public static AtlasHandler instance;
 	public static final int TEXTURE_SIZE = 64;
 	
-	private int atlasTextureWidth;
-	private TextureAtlas texture;
-	private final BiMap<Vector2i, Resource> textures = HashBiMap.create();
+	private TextureArray texture;
+	private final BiMap<Integer, Resource> textures = HashBiMap.create();
 	
 	public AtlasHandler() {
 		instance = this;
@@ -34,53 +30,24 @@ public class AtlasHandler {
 			return;
 		}
 		Debug.log("Processing {} textures", res.size());
-		while (atlasTextureWidth * atlasTextureWidth < res.size()) {
-			atlasTextureWidth ++;
+		int i = 0;
+		for (Resource img : res) {
+			textures.put(i ++, img);
 		}
-		if (atlasTextureWidth * TEXTURE_SIZE > Game.maxTextureSize) {
-			Debug.error("Too many textures for the texture atlas. Predicted size: {}^2. Maximum size: {}^2", atlasTextureWidth * TEXTURE_SIZE, Game.maxTextureSize);
-		}
-		Debug.log("Texture atlas size: {}", atlasTextureWidth * TEXTURE_SIZE);
-		generateAtlasTexture(res);
+		
+		// Generate the array of textures
+		texture = new TextureArray("", TEXTURE_SIZE, TEXTURE_SIZE, res.toArray(new Resource[res.size()]));
 	}
 	
-	private void generateAtlasTexture(List<Resource> textures) {
-		int wh = TEXTURE_SIZE * atlasTextureWidth;
-		texture = new TextureAtlas("", wh, wh);
-		Vector2i pos = new Vector2i(0, 0);
-		for (Resource texture : textures) {
-			Vector2i p = new Vector2i(pos);
-			if (this.texture.addTexture(p, texture.getFullPath())) {
-				this.textures.put(p, texture);
-				pos.x ++;
-				if (pos.x >= atlasTextureWidth) {
-					pos.x = 0;
-					pos.y ++;
-				}
-			} else {
-				Debug.error("Failed to add texture: {}", texture);
-			}
-		}
-		texture.finishAtlas();
-		Debug.log("Generated atlas");
+	public int getTextureId(Resource res) {
+		return textures.inverse().get(res);
 	}
 	
-	public Vector2i getTexturePosition(Resource res) {
-		return new Vector2i(textures.inverse().get(res));
+	public Resource getTexture(int id) {
+		return textures.get(id);
 	}
 	
-	public Bounds getTextureBounds(Resource res) {
-		float w = 1.0f / atlasTextureWidth;
-		Vector2i tmp = getTexturePosition(res);
-		Vector2f p = new Vector2f(tmp.x, tmp.y).mul(w, new Vector2f());
-		return new Bounds(p, new Vector2f(w, w));
-	}
-	
-	public Resource getTextureAtPosition(Vector2i pos) {
-		return textures.get(pos);
-	}
-	
-	public Texture getTexture() {
+	public TextureArray getTexture() {
 		return texture;
 	}
 	

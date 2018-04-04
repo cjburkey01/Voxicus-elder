@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus.graphic;
+package com.cjburkey.voxicus.shader;
 
 import static org.lwjgl.opengl.GL20.*;
 import java.util.HashMap;

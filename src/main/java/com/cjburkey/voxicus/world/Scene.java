@@ -16,6 +16,7 @@ public class Scene {
 	private boolean camWasNull = true;
 	private final GuiHandler guiHandler = new GuiHandler();
 	private final List<GameObject> objs = new ArrayList<>();
+	private final List<GameObject> addQueue = new ArrayList<>();
 	private final EventSystem eventHandler = new EventSystem();
 	
 	public Scene() {
@@ -24,7 +25,7 @@ public class Scene {
 	
 	public GameObject addObject(String name) {
 		GameObject obj = new GameObject(name);
-		objs.add(obj);
+		addQueue.add(obj);
 		obj.onInit();
 		return obj;
 	}
@@ -36,6 +37,11 @@ public class Scene {
 				objs.remove(i);
 				i --;
 			}
+		}
+		while (!addQueue.isEmpty()) {
+			objs.add(addQueue.get(0));
+			addQueue.get(0).onInit();
+			addQueue.remove(0);
 		}
 		objs.forEach(obj -> obj.onUpdateStart());
 		objs.forEach(obj -> obj.onUpdate());

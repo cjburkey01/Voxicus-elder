@@ -1,7 +1,6 @@
-package com.cjburkey.voxicus.graphic;
+package com.cjburkey.voxicus.mesh;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -11,6 +10,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import com.cjburkey.voxicus.Voxicus;
 import com.cjburkey.voxicus.core.Util;
+import com.cjburkey.voxicus.shader.ShaderProgram;
 import com.cjburkey.voxicus.texture.Texture;
 
 public class MeshTexture extends Mesh {
@@ -47,7 +47,7 @@ public class MeshTexture extends Mesh {
 		this.texture = texture;
 	}
 	
-	protected ShaderProgram getShader() {
+	public ShaderProgram getShader() {
 		return Voxicus.getGame().shaderTextured;
 	}
 	
@@ -62,6 +62,10 @@ public class MeshTexture extends Mesh {
 	
 	public void bindUvBuffer() {
 		glBindBuffer(GL_ARRAY_BUFFER, uvbo);
+	}
+	
+	public Texture getTexture() {
+		return texture;
 	}
 	
 	protected void onRenderCall() {

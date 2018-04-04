@@ -4,7 +4,11 @@ import com.cjburkey.voxicus.resource.Resource;
 
 public class Block {
 	
-	public final Resource texture = new Resource("voxicus", "texture/terrain/main.png");
+	public final Resource texture;
+	
+	public Block(Resource res) {
+		texture = res;
+	}
 	
 	public boolean isFullBlock(BlockState state) {
 		return true;

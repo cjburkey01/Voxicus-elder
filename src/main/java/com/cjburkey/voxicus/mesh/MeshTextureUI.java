@@ -1,6 +1,7 @@
-package com.cjburkey.voxicus.graphic;
+package com.cjburkey.voxicus.mesh;
 
 import com.cjburkey.voxicus.component.ComponentTransform;
+import com.cjburkey.voxicus.shader.ShaderProgram;
 
 public class MeshTextureUI extends MeshTexture {
 	
@@ -9,8 +10,12 @@ public class MeshTextureUI extends MeshTexture {
 	}
 	
 	// Handled by the GUIHandler
-	protected ShaderProgram getShader() {
+	public ShaderProgram getShader() {
 		return null;
+	}
+	
+	public boolean getShouldAutoUniform() {
+		return false;
 	}
 	
 }

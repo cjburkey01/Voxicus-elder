@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus.graphic;
+package com.cjburkey.voxicus.core;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;

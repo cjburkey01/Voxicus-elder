@@ -1,4 +1,4 @@
-package com.cjburkey.voxicus.graphic;
+package com.cjburkey.voxicus.mesh;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -9,6 +9,7 @@ import java.util.List;
 import org.joml.Vector3f;
 import com.cjburkey.voxicus.Voxicus;
 import com.cjburkey.voxicus.core.Util;
+import com.cjburkey.voxicus.shader.ShaderProgram;
 
 public class MeshColor extends Mesh {
 	
@@ -34,7 +35,7 @@ public class MeshColor extends Mesh {
 		unbindVertexArray();
 	}
 	
-	protected ShaderProgram getShader() {
+	public ShaderProgram getShader() {
 		return Voxicus.getGame().shaderColored;
 	}
 	

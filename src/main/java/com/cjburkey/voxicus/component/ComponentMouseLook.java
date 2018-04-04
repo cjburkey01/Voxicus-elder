@@ -14,7 +14,7 @@ public class ComponentMouseLook extends ObjectComponent {
 	private double timeScaleBeforePause = 0.0d;
 	private double pausedTimeScale = 1.0d;
 	
-	private float sensitivity = 120.0f;
+	private float sensitivity = 0.5f;
 	private float smoothing = 0.1f;
 	
 	private Vector2f rotChange = new Vector2f();
@@ -33,7 +33,7 @@ public class ComponentMouseLook extends ObjectComponent {
 		}
 		
 		rotChange.set(Input.getMouseDelta().y, Input.getMouseDelta().x);
-		rotChange.mul(sensitivity * (float) Time.getPureDeltaTimeF());
+		rotChange.mul(sensitivity);
 		goalRotation.add(rotChange);
 		goalRotation.x = Util.clamp(goalRotation.x, -90.0f, 90.0f);
 		
