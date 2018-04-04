@@ -65,8 +65,10 @@ public abstract class Mesh {
 			return;
 		}
 		
-		getShader().bind();
-		getShader().setUniform("modelViewMatrix", Transformations.getModelView(ComponentCamera.main.getParentObj().transform, parent));
+		if (getShader() != null) {
+			getShader().bind();
+		}
+		onUniform(parent);
 		
 		bindVertexArray();
 		bindElementBuffer();
@@ -82,6 +84,10 @@ public abstract class Mesh {
 	 */
 	protected void onRenderCall() {
 		glDrawElements(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, 0);
+	}
+	
+	protected void onUniform(ComponentTransform parent) {
+		getShader().setUniform("modelViewMatrix", Transformations.getModelView(ComponentCamera.main.getParentObj().transform, parent));
 	}
 	
 	protected abstract ShaderProgram getShader();

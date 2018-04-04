@@ -14,14 +14,10 @@ public final class ComponentCamera extends ObjectComponent {
 	private Vector3f clearColor = new Vector3f(0.0f, 0.0f, 0.0f);
 	private float minZ = 0.01f;
 	private float maxZ = 1000.0f;
-	private float aspect;
+	private Vector2i screen;
 	
-	public ComponentCamera(Vector2i windowSize) {
-		this((float) windowSize.x / windowSize.y);
-	}
-	
-	public ComponentCamera(float aspect) {
-		setAspect(aspect);
+	public ComponentCamera(Vector2i size) {
+		setSize(size);
 		if (main != null) {
 			Debug.warn("There is already a main camera defined");
 			return;
@@ -64,14 +60,14 @@ public final class ComponentCamera extends ObjectComponent {
 	/**
 	 * @param aspect The aspect ratio of the window (width / height)
 	 */
-	public void setAspect(float aspect) {
-		this.aspect = aspect;
+	public void setSize(Vector2i screen) {
+		this.screen = screen;
 		update();
 	}
 	
 	private void update() {
 		GL11.glClearColor(clearColor.x, clearColor.y, clearColor.z, 1.0f);
-		Transformations.updateProjection(fov, aspect, minZ, maxZ);
+		Transformations.updateProjection(fov, screen.x, screen.y, minZ, maxZ);
 	}
 	
 	public float getFov() {
@@ -90,8 +86,8 @@ public final class ComponentCamera extends ObjectComponent {
 		return maxZ;
 	}
 	
-	public float getAspect() {
-		return aspect;
+	public Vector2i getSize() {
+		return new Vector2i(screen);
 	}
 	
 }

@@ -2,14 +2,25 @@ package com.cjburkey.voxicus.world;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.cjburkey.voxicus.Voxicus;
 import com.cjburkey.voxicus.component.Component;
 import com.cjburkey.voxicus.component.ComponentCamera;
 import com.cjburkey.voxicus.core.Debug;
+import com.cjburkey.voxicus.event.EventSystem;
+import com.cjburkey.voxicus.gui.GuiHandler;
 
 public class Scene {
 	
+	private static Scene active;
+	
 	private boolean camWasNull = true;
+	private final GuiHandler guiHandler = new GuiHandler();
 	private final List<GameObject> objs = new ArrayList<>();
+	private final EventSystem eventHandler = new EventSystem();
+	
+	public Scene() {
+		active = this;
+	}
 	
 	public GameObject addObject() {
 		GameObject obj = new GameObject();
@@ -40,16 +51,10 @@ public class Scene {
 			camWasNull = false;
 			Debug.log("Camera found in scene");
 		}
-		
-		objs.forEach(obj -> {
-			obj.onRenderStart();
-		});
-		objs.forEach(obj -> {
-			obj.onRender();
-		});
-		objs.forEach(obj -> {
-			obj.onRenderEnd();
-		});
+		objs.forEach(obj -> obj.onRenderStart());
+		objs.forEach(obj -> obj.onRender());
+		objs.forEach(obj -> obj.onRenderEnd());
+		guiHandler.onRender(Voxicus.getGame().shaderTexturedUI);
 	}
 	
 	public <T extends Component> T getComponentInScene(Class<T> type) {
@@ -60,6 +65,18 @@ public class Scene {
 			}
 		}
 		return null;
+	}
+	
+	public EventSystem getEventHandler() {
+		return eventHandler;
+	}
+	
+	public GuiHandler getGuiHandler() {
+		return guiHandler;
+	}
+	
+	public static Scene getActive() {
+		return active;
 	}
 	
 }

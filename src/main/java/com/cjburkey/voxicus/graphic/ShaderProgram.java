@@ -63,7 +63,7 @@ public abstract class ShaderProgram {
 	protected void addUniform(String name) {
 		int loc = glGetUniformLocation(program, name);
 		if (loc < 0) {
-			Debug.error("Uniform not found: " + name);
+			Debug.error("Uniform not found: {} in {}", name, getClass().getSimpleName());
 			return;
 		}
 		uniforms.put(name, loc);

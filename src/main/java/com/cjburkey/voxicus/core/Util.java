@@ -30,6 +30,8 @@ public class Util {
 	public static final Vector3f DOWN = neg(UP);
 	public static final Vector3f BACK = neg(FORWARD);
 	
+	public static final Bounds UV_DEF = new Bounds(0.0f, 0.0f, 1.0f, 1.0f);
+	
 	// -- IO -- //
 	
 	public static String getTextFromResource(String resPath) {
@@ -149,6 +151,10 @@ public class Util {
 	
 	// -- MATHS -- //
 	
+	public static int floorDiv(float a, float b) {
+		return (int) Math.floor(a / b);
+	}
+	
 	public static float meanf(List<Float> input) {
 		return meanf(input.toArray(new Float[input.size()]));
 	}
@@ -254,6 +260,16 @@ public class Util {
 		return in;
 	}
 	
+	public static double clamp(double in, double min, double max) {
+		if (in < min) {
+			return min;
+		}
+		if (in > max) {
+			return max;
+		}
+		return in;
+	}
+	
 	public static float smoothDamp(float current, float target, float[] velocity, float smoothTime, float deltaTime) {
 		return smoothDamp(current, target, velocity, smoothTime, Float.MAX_VALUE, deltaTime);
 	}
@@ -271,6 +287,29 @@ public class Util {
 		float num7 = (velocity[0] - num * num4) * deltaTime;
 		velocity[0] = (velocity[0] - num * num7) * num3;
 		float num8 = target + (num4 + num7) * num3;
+		if (num5 - current > 0.0f == num8 > num5) {
+			velocity[0] = 0;
+		}
+		return num8;
+	}
+	
+	public static double smoothDamp(double current, double target, double[] velocity, double smoothTime, double deltaTime) {
+		return smoothDamp(current, target, velocity, smoothTime, Double.MAX_VALUE, deltaTime);
+	}
+	
+	public static double smoothDamp(double current, double target, double[] velocity, double smoothTime, double maxSpeed, double deltaTime) {
+		smoothTime = Math.max(0.0001f, smoothTime);
+		double num = 2.0f / smoothTime;
+		double num2 = num * deltaTime;
+		double num3 = 1.0f / (1.0f + num2 + 0.48f * num2 * num2 + 0.235f * num2 * num2 * num2);
+		double num4 = current - target;
+		double num5 = target;
+		double num6 = maxSpeed * smoothTime;
+		num4 = clamp(num4, -num6, num6);
+		target = current - num4;
+		double num7 = (velocity[0] - num * num4) * deltaTime;
+		velocity[0] = (velocity[0] - num * num7) * num3;
+		double num8 = target + (num4 + num7) * num3;
 		if (num5 - current > 0.0f == num8 > num5) {
 			velocity[0] = 0;
 		}
@@ -342,60 +381,60 @@ public class Util {
 	 * @param sides Represent FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM faces
 	 */
 	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, float size, Boolean[] sides) {
-		addRect(verts, inds, uvs, corner, new Vector3f(size, size, size), sides);
+		addRect(verts, inds, uvs, corner, UV_DEF, new Vector3f(size, size, size), sides);
 	}
 	
 	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f size) {
-		addRect(verts, inds, uvs, corner, size, fillArray(new Boolean[6], true));
+		addRect(verts, inds, uvs, corner, UV_DEF, size, fillArray(new Boolean[6], true));
 	}
 	
 	public static void addSqQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f right, Vector3f up, float size) {
-		addRectQuad(verts, inds, uvs, corner, right, up, new Vector2f(size, size));
+		addRectQuad(verts, inds, uvs, corner, right, up, UV_DEF, new Vector2f(size, size));
 	}
 	
 	/**
 	 * @param sides Represent FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM faces
 	 */
-	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f size, Boolean[] sides) {
+	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Bounds uv, Vector3f size, Boolean[] sides) {
 		if (sides.length < 1) {
 			return;
 		}
 		if (sides[0]) {
-			addRectQuad(verts, inds, uvs, corner, RIGHT, UP, new Vector2f(size.x, size.y));
+			addRectQuad(verts, inds, uvs, corner, RIGHT, UP, uv, new Vector2f(size.x, size.y));
 		}
 		if (sides.length < 2) {
 			return;
 		}
 		if (sides[1]) {
-			addRectQuad(verts, inds, uvs, add(corner, add(scalar(RIGHT, size.x), scalar(FORWARD, size.z))), LEFT, UP, new Vector2f(size.x, size.y));
+			addRectQuad(verts, inds, uvs, add(corner, add(scalar(RIGHT, size.x), scalar(FORWARD, size.z))), LEFT, UP, uv, new Vector2f(size.x, size.y));
 		}
 		if (sides.length < 3) {
 			return;
 		}
 		if (sides[2]) {
-			addRectQuad(verts, inds, uvs, add(corner, scalar(RIGHT, size.x)), FORWARD, UP, new Vector2f(size.z, size.y));
+			addRectQuad(verts, inds, uvs, add(corner, scalar(RIGHT, size.x)), FORWARD, UP, uv, new Vector2f(size.z, size.y));
 		}
 		if (sides.length < 4) {
 			return;
 		}
 		if (sides[3]) {
-			addRectQuad(verts, inds, uvs, add(corner, scalar(FORWARD, size.z)), BACK, UP, new Vector2f(size.z, size.y));
+			addRectQuad(verts, inds, uvs, add(corner, scalar(FORWARD, size.z)), BACK, UP, uv, new Vector2f(size.z, size.y));
 		}
 		if (sides.length < 5) {
 			return;
 		}
 		if (sides[4]) {
-			addRectQuad(verts, inds, uvs, add(corner, scalar(UP, size.y)), RIGHT, FORWARD, new Vector2f(size.x, size.z));
+			addRectQuad(verts, inds, uvs, add(corner, scalar(UP, size.y)), RIGHT, FORWARD, uv, new Vector2f(size.x, size.z));
 		}
 		if (sides.length < 6) {
 			return;
 		}
 		if (sides[5]) {
-			addRectQuad(verts, inds, uvs, add(corner, scalar(FORWARD, size.z)), RIGHT, BACK, new Vector2f(size.x, size.z));
+			addRectQuad(verts, inds, uvs, add(corner, scalar(FORWARD, size.z)), RIGHT, BACK, uv, new Vector2f(size.x, size.z));
 		}
 	}
 	
-	public static void addRectQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f right, Vector3f up, Vector2f size) {
+	public static void addRectQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, Vector3f corner, Vector3f right, Vector3f up, Bounds uv, Vector2f size) {
 		short index = (short) verts.size();
 		verts.add(new Vector3f(corner));
 		verts.add(add(corner, scalar(right, size.x)));
@@ -409,10 +448,12 @@ public class Util {
 		inds.add((short) (index + 2));
 		inds.add((short) (index + 3));
 		
-		uvs.add(new Vector2f(0.0f, 1.0f));
-		uvs.add(new Vector2f(1.0f, 1.0f));
-		uvs.add(new Vector2f(1.0f, 0.0f));
-		uvs.add(new Vector2f(0.0f, 0.0f));
+		Vector2f uvMin = uv.getMin();
+		Vector2f uvMax = uv.getMax();
+		uvs.add(new Vector2f(uvMin.x, uvMax.y));
+		uvs.add(new Vector2f(uvMax.x, uvMax.y));
+		uvs.add(new Vector2f(uvMax.x, uvMin.y));
+		uvs.add(new Vector2f(uvMin.x, uvMin.y));
 	}
 	
 	// -- VECTOR UTILS -- //

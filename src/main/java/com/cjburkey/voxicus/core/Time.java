@@ -8,7 +8,12 @@ public class Time {
 	private static double previousTime = getTimeSeconds();
 	private static double currentTime = getTimeSeconds();
 	private static double deltaTime = 0.0d;
+	
+	// Smooth timescale movement
+	private static double timeScaleSmoothing = 0.1d;
+	private static double goalTimeScale = 1.0d;
 	private static double timeScale = 1.0d;
+	private static double[] timeScaleV = new double[1];
 	
 	public static void init() {
 		startTimeSeconds = getTimeSeconds();
@@ -18,10 +23,12 @@ public class Time {
 		previousTime = currentTime;
 		currentTime = Math.abs(updateStartTimeNanos) / 1000000000.0d;
 		deltaTime = currentTime - previousTime;
+		
+		timeScale = Util.smoothDamp(timeScale, goalTimeScale, timeScaleV, timeScaleSmoothing, getPureDeltaTime());
 	}
 	
 	public static void setTimeScale(double time) {
-		timeScale = time;
+		goalTimeScale = time;
 	}
 	
 	public static double getStartTime() {

@@ -28,7 +28,7 @@ public class Texture {
 			texture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glPixelStorei(GL_TEXTURE_2D, 1);	// 1 byte per component
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	// Pixel perfect
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// Pixel perfect (with mipmapping)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buff);
 			glGenerateMipmap(GL_TEXTURE_2D);

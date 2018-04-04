@@ -26,7 +26,9 @@ public class ComponentMouseLook extends ObjectComponent {
 		if (Input.getIsKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
 			toggleMouseLock();
 		}
+		
 		if (!mouseLocked) {
+			Time.setTimeScale(pausedTimeScale);
 			Input.voidMouseMovement();
 		}
 		
@@ -54,7 +56,6 @@ public class ComponentMouseLook extends ObjectComponent {
 		if (pauseOnNotLocked) {
 			if (!mouseLocked) {
 				timeScaleBeforePause = Time.getTimeScale();
-				Time.setTimeScale(pausedTimeScale);
 			} else {
 				Time.setTimeScale(timeScaleBeforePause);
 			}

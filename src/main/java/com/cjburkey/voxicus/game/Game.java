@@ -3,15 +3,19 @@ package com.cjburkey.voxicus.game;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.glfw.GLFW;
 import com.cjburkey.voxicus.Voxicus;
+import com.cjburkey.voxicus.core.DataHandler;
+import com.cjburkey.voxicus.core.DataType;
 import com.cjburkey.voxicus.core.Debug;
 import com.cjburkey.voxicus.core.IInstance;
 import com.cjburkey.voxicus.core.Input;
 import com.cjburkey.voxicus.core.SemVer;
 import com.cjburkey.voxicus.core.Time;
 import com.cjburkey.voxicus.core.Transformations;
+import com.cjburkey.voxicus.event.EventSystem;
 import com.cjburkey.voxicus.graphic.ShaderColor;
 import com.cjburkey.voxicus.graphic.ShaderProgram;
 import com.cjburkey.voxicus.graphic.ShaderTexture;
+import com.cjburkey.voxicus.graphic.ShaderTextureUI;
 import com.cjburkey.voxicus.graphic.Window;
 import com.cjburkey.voxicus.world.Scene;
 
@@ -30,7 +34,9 @@ public final class Game {
 	private Window window;
 	public ShaderProgram shaderColored;
 	public ShaderProgram shaderTextured;
+	public ShaderProgram shaderTexturedUI;
 	private final Scene world = new Scene();
+	private final EventSystem globalEventHandler = new EventSystem();
 	
 	public void init() {
 		Debug.log("Initializing game");
@@ -46,17 +52,22 @@ public final class Game {
 		
 		Debug.log("OpenGL: {}", glVersion);
 		Debug.log("GLFW: {}", glfwVersion);
+
+		Debug.log("Loading data types");
+		DataHandler.scanTypes(DataType.class);
 	}
 	
 	public void start() {
 		Debug.log("Starting game");
 		running = true;
-		
+
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glFrontFace(GL_CCW);
 		glCullFace(GL_BACK);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		shaderColored = new ShaderColor("res/voxicus/shader", "colorVertex", "colorFragment");
 		if (shaderColored.getHasError()) {
@@ -75,6 +86,15 @@ public final class Game {
 		}
 		shaderTextured.bind();
 		Debug.log("Created texture shader program");
+		
+		shaderTexturedUI = new ShaderTextureUI("res/voxicus/shader", "textureUIVertex", "textureUIFragment");
+		if (shaderTexturedUI.getHasError()) {
+			Debug.error("Failed to create textured ui shader");
+			stop();
+			return;
+		}
+		shaderTexturedUI.bind();
+		Debug.log("Created textured ui shader program");
 		
 		Input.init(window);
 		INST.init();
@@ -119,6 +139,8 @@ public final class Game {
 			glViewport(0, 0, window.getWindowSize().x, window.getWindowSize().y);
 			Transformations.updateProjection(90.0f, window.getWindowSize().x, window.getWindowSize().y, 0.01f, 1000.0f);
 			shaderColored.setUniform("projectionMatrix", Transformations.PROJECTION);
+			shaderTextured.setUniform("projectionMatrix", Transformations.PROJECTION);
+			shaderTexturedUI.setUniform("projectionMatrix", Transformations.ORTHOGRAPHIC);
 			resized = false;
 		}
 	}
@@ -156,6 +178,13 @@ public final class Game {
 	
 	public static Window getWindow() {
 		return Voxicus.getGame().window;
+	}
+	
+	/**
+	 * Carried across scenes
+	 */
+	public static EventSystem getGlobalEventHandler() {
+		return Voxicus.getGame().globalEventHandler;
 	}
 	
 }
