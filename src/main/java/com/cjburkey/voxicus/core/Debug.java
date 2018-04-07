@@ -25,6 +25,10 @@ public class Debug {
 		logger.error(sanitize(msg));
 	}
 	
+	public static final void warn(Object msg, Object... param) {
+		logger.error(sanitize(msg), param);
+	}
+	
 	public static final void error(Object msg) {
 		error(msg, new Object[] { });
 	}

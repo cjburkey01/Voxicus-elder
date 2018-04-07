@@ -17,6 +17,7 @@ public class ComponentChunk extends ObjectComponent {
 		if (chunk == null) {
 			Debug.error("Chunk was not set for instantiated chunk");
 		}
+		Debug.log("Instantiate chunk: {}, {}, {}", chunk.getChunkPos().x, chunk.getChunkPos().y, chunk.getChunkPos().z);
 		mesh = getParentObj().addComponent(new ComponentMesh());
 		mesh.setMesh(ChunkMesher.generateMeshForChunk(chunk));
 		getParentObj().transform.position.set(chunk.getChunkPos()).mul(Chunk.SIZE);

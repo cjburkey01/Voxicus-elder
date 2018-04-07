@@ -71,7 +71,7 @@ public class World implements IChunkHandler {
 		Chunk c = getAndGenerateChunk(chunkPos);
 		ComponentChunk cc = Scene.getActive().addObject("Chunk " + chunkPos).addComponent(new ComponentChunk(c));
 		if (cc == null) {
-			Debug.warn("Failed to spawn chunk: " + chunkPos);
+			Debug.warn("Failed to spawn chunk: {}", chunkPos);
 			return;
 		}
 		instantiated.put(getIndexOfPos(chunkPos), cc);

@@ -135,6 +135,14 @@ public class Util {
 		return intBuffer(is);
 	}
 	
+	public static ShortBuffer sBuffer(List<Short> shorts) {
+		short[] is = new short[shorts.size()];
+		for (int i = 0; i < shorts.size(); i ++) {
+			is[i] = shorts.get(i);
+		}
+		return shortBuffer(is);
+	}
+	
 	public static ShortBuffer shortBuffer(short[] shorts) {
 		ShortBuffer buffer = memAllocShort(shorts.length);
 		buffer.put(shorts).flip();
@@ -389,108 +397,6 @@ public class Util {
 			}
 		}
 		return null;
-	}
-	
-	// -- MESHING -- //
-	
-	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, List<Integer> texArr, List<Integer> tex, Vector3f corner, Bounds uv, float size) {
-		addRect(verts, inds, uvs, texArr, uv, tex, corner, new Vector3f(size, size, size));
-	}
-	
-	/**
-	 * @param verts The list of vertices in which to put the created vertices
-	 * @param inds The list of indices in which to put the created indices
-	 * @param uvs The list of texture coordinates in which to put the created uvs
-	 * @param uv The bounds of the uv selection for the cube
-	 * @param texArr The list of texture coordinates in which to put the ids for each face
-	 * @param tex A list of texture ids, one for each face
-	 * @param corner The position at which to spawn the cube
-	 * @param size The width of the cube (and the height and length)
-	 * @param sides A list of booleans to determine which sides should be culled (FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM)
-	 */
-	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, List<Integer> texArr, Bounds uv, List<Integer> tex, Vector3f corner, float size, Boolean[] sides) {
-		addRect(verts, inds, uvs, texArr, uv, tex, corner, new Vector3f(size, size, size), sides);
-	}
-	
-	public static void addCube(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, List<Integer> texArr, Bounds uv, List<Integer> tex, Vector3f corner, float size) {
-		addRect(verts, inds, uvs, texArr, uv, tex, corner, new Vector3f(size, size, size));
-	}
-	
-	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, List<Integer> texArr, Bounds uv, List<Integer> tex, Vector3f corner, Vector3f size) {
-		addRect(verts, inds, uvs, texArr, uv, tex, corner, size, fillArray(new Boolean[6], true));
-	}
-	
-	public static void addSqQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, List<Integer> texArr, Bounds uv, int tex, Vector3f corner, Vector3f right, Vector3f up, float size) {
-		addRectQuad(verts, inds, uvs, texArr, uv, tex, corner, right, up, new Vector2f(size, size));
-	}
-	
-	/**
-	 * @param sides Represent FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM faces
-	 */
-	public static void addRect(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, List<Integer> texArr, Bounds uv, List<Integer> tex, Vector3f corner, Vector3f size, Boolean[] sides) {
-		if (sides.length < 1) {
-			return;
-		}
-		if (sides[0]) {
-			addRectQuad(verts, inds, uvs, texArr, uv, tex.get(0), corner, RIGHT, UP, new Vector2f(size.x, size.y));
-		}
-		if (sides.length < 2) {
-			return;
-		}
-		if (sides[1]) {
-			addRectQuad(verts, inds, uvs, texArr, uv, tex.get(1), add(corner, add(scalar(RIGHT, size.x), scalar(FORWARD, size.z))), LEFT, UP, new Vector2f(size.x, size.y));
-		}
-		if (sides.length < 3) {
-			return;
-		}
-		if (sides[2]) {
-			addRectQuad(verts, inds, uvs, texArr, uv, tex.get(2), add(corner, scalar(RIGHT, size.x)), FORWARD, UP, new Vector2f(size.z, size.y));
-		}
-		if (sides.length < 4) {
-			return;
-		}
-		if (sides[3]) {
-			addRectQuad(verts, inds, uvs, texArr, uv, tex.get(3), add(corner, scalar(FORWARD, size.z)), BACK, UP, new Vector2f(size.z, size.y));
-		}
-		if (sides.length < 5) {
-			return;
-		}
-		if (sides[4]) {
-			addRectQuad(verts, inds, uvs, texArr, uv, tex.get(4), add(corner, scalar(UP, size.y)), RIGHT, FORWARD, new Vector2f(size.x, size.z));
-		}
-		if (sides.length < 6) {
-			return;
-		}
-		if (sides[5]) {
-			addRectQuad(verts, inds, uvs, texArr, uv, tex.get(5), add(corner, scalar(FORWARD, size.z)), RIGHT, BACK, new Vector2f(size.x, size.z));
-		}
-	}
-	
-	public static void addRectQuad(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs, List<Integer> texArr, Bounds uv, int tex, Vector3f corner, Vector3f right, Vector3f up, Vector2f size) {
-		short index = (short) verts.size();
-		verts.add(new Vector3f(corner));
-		verts.add(add(corner, scalar(right, size.x)));
-		verts.add(add(corner, add(scalar(right, size.x), scalar(up, size.y))));
-		verts.add(add(corner, scalar(up, size.y)));
-		
-		inds.add(index);
-		inds.add((short) (index + 1));
-		inds.add((short) (index + 2));
-		inds.add(index);
-		inds.add((short) (index + 2));
-		inds.add((short) (index + 3));
-		
-		Vector2f uvMin = uv.getMin();
-		Vector2f uvMax = uv.getMax();
-		uvs.add(new Vector2f(uvMin.x, uvMax.y));
-		uvs.add(new Vector2f(uvMax.x, uvMax.y));
-		uvs.add(new Vector2f(uvMax.x, uvMin.y));
-		uvs.add(new Vector2f(uvMin.x, uvMin.y));
-		
-		texArr.add(tex);
-		texArr.add(tex);
-		texArr.add(tex);
-		texArr.add(tex);
 	}
 	
 	// -- VECTOR UTILS -- //

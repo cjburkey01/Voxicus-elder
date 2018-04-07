@@ -39,9 +39,6 @@ public class Chunk {
 		return !(pos.x < 0 || pos.x >= SIZE || pos.y < 0 || pos.y >= SIZE || pos.z < 0 || pos.z >= SIZE);
 	}
 	
-	// Z major major
-	// Y major
-	// X minor
 	private int getIndex(Vector3i pos) {
 		return pos.z * SIZE * SIZE + pos.y * SIZE + pos.x;
 	}

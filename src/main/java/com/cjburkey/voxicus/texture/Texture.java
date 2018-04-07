@@ -3,12 +3,13 @@ package com.cjburkey.voxicus.texture;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.stb.STBImage.*;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import org.apache.commons.io.IOUtils;
+import org.lwjgl.BufferUtils;
 import com.cjburkey.voxicus.core.Debug;
-import de.matthiasmann.twl.utils.PNGDecoder;
-import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
 public class Texture {
 	
@@ -28,17 +29,25 @@ public class Texture {
 			if (is == null) {
 				throw new FileNotFoundException("Could not locate texture file: " + path);
 			}
-			PNGDecoder img = new PNGDecoder(is);
-			ByteBuffer buff = ByteBuffer.allocateDirect(4 * img.getWidth() * img.getHeight());
-			img.decode(buff, img.getWidth() * 4, Format.RGBA);
-			buff.flip();
+			byte[] imgbuff = IOUtils.toByteArray(is);
+			ByteBuffer image = BufferUtils.createByteBuffer(imgbuff.length);
+			image.put(imgbuff).flip();
+			int[] w = new int[1];
+			int[] h = new int[1];
+			int[] comp = new int[1];
+			ByteBuffer buff = stbi_load_from_memory(image, w, h, comp, 0);
+			
+//			PNGDecoder img = new PNGDecoder(is);
+//			ByteBuffer buff = ByteBuffer.allocateDirect(4 * img.getWidth() * img.getHeight());
+//			img.decode(buff, img.getWidth() * 4, Format.RGBA);
+//			buff.flip();
 			
 			texture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	// 1 byte per component
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// Pixel perfect (with mipmapping)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buff);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w[0], h[0], 0, GL_RGBA, GL_UNSIGNED_BYTE, buff);
 			glGenerateMipmap(GL_TEXTURE_2D);
 			
 			isCreated = true;

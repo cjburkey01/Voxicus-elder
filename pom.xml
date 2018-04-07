@@ -9,10 +9,10 @@
 		<lwjgl.version>3.1.7-SNAPSHOT</lwjgl.version>
 		<steamworks4j.version>1.7.0</steamworks4j.version>
 		<joml.version>1.9.9</joml.version>
-		<pngdecoder.version>1.0</pngdecoder.version>
 		<log4j.version>2.11.0</log4j.version>
 		<reflections.version>0.9.11</reflections.version>
 		<guava.version>24.1-jre</guava.version>
+		<commonsio.version>1.3.2</commonsio.version>
 	</properties>
 	<profiles>
 		<profile>
@@ -129,11 +129,6 @@
 			<version>${joml.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.l33tlabs.twl</groupId>
-			<artifactId>pngdecoder</artifactId>
-			<version>${pngdecoder.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${log4j.version}</version>
@@ -147,6 +142,11 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commonsio.version}</version>
 		</dependency>
 	</dependencies>
 </project>
