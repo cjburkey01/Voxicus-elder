@@ -16,10 +16,10 @@ import com.cjburkey.voxicus.texture.Texture;
 public class MeshTexture extends Mesh {
 	
 	private Texture texture;
-	private int uvbo;
+	private int uvBo;
 	
 	public MeshTexture() {
-		uvbo = glGenBuffers();
+		uvBo = glGenBuffers();
 	}
 	
 	public void setMesh(List<Vector3f> verts, List<Short> inds, List<Vector2f> uvs) {
@@ -28,7 +28,7 @@ public class MeshTexture extends Mesh {
 		FloatBuffer uvBuff = Util.vec2fBuffer(uvs.toArray(new Vector2f[uvs.size()]));
 		
 		bindVertexArray();
-		glBindBuffer(GL_ARRAY_BUFFER, uvbo);
+		bindUvBuffer();
 		glBufferData(GL_ARRAY_BUFFER, uvBuff, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
@@ -55,13 +55,13 @@ public class MeshTexture extends Mesh {
 		super.onDestroy();
 		
 		glDisableVertexAttribArray(1);
-		glDeleteBuffers(uvbo);
+		glDeleteBuffers(uvBo);
 		
-		uvbo = 0;
+		uvBo = 0;
 	}
 	
 	public void bindUvBuffer() {
-		glBindBuffer(GL_ARRAY_BUFFER, uvbo);
+		glBindBuffer(GL_ARRAY_BUFFER, uvBo);
 	}
 	
 	public Texture getTexture() {

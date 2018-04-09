@@ -5,7 +5,7 @@ import com.cjburkey.voxicus.chunk.Chunk;
 public class ChunkMesher {
 	
 	// TODO: CREATE THIS
-	public static MeshTexture generateMeshForChunk(Chunk chunk) {
+	public static MeshVoxel generateMeshForChunk(Chunk chunk) {
 		return null;
 	}
 	

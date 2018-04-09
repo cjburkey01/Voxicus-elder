@@ -3,6 +3,7 @@ package com.cjburkey.voxicus.game;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import com.cjburkey.voxicus.block.Blocks;
@@ -70,14 +71,15 @@ public class InstanceVoxicus implements IInstance {
 		List<Vector3f> verts = new ArrayList<>();
 		List<Short> inds = new ArrayList<>();
 		List<Vector3f> normals = new ArrayList<>();
-		List<Vector2f> offs = new ArrayList<>();
-		List<Vector3f> pos = new ArrayList<>();
+		List<Vector2f> tiles = new ArrayList<>();
 		
-		MeshUtil.addQuad(verts, inds, normals, offs, pos, new Vector3f(0.0f, 0.0f, 0.0f), Util.RIGHT, Util.UP, 1.0f);
-		MeshUtil.addQuad(verts, inds, normals, offs, pos, new Vector3f(5.0f, 0.0f, 0.0f), Util.RIGHT, Util.UP, 6.0f);
+		Vector2i pos1 = AtlasHandler.getTexture(new Resource("voxicus", "texture/terrain/blockStone.png"));
+		Vector2i pos2 = AtlasHandler.getTexture(new Resource("voxicus", "texture/terrain/blockGrass2.png"));
+		MeshUtil.addVoxelQuad(verts, inds, normals, tiles, pos1, new Vector3f(0.0f, 0.0f, 0.0f), Util.RIGHT, Util.FORWARD, new Vector2f(5.0f, 1.0f));
+		MeshUtil.addVoxelQuad(verts, inds, normals, tiles, pos2, new Vector3f(0.0f, -2.0f, 0.0f), Util.RIGHT, Util.UP, new Vector2f(3.0f, 2.0f));
 		
 		MeshVoxel quadMesh = new MeshVoxel();
-		quadMesh.setMesh(verts, inds, normals, offs, pos, AtlasHandler.getTexture()/*Texture.getFromResource("/res/voxicus/texture/terrain/blockStone.png")*/);
+		quadMesh.setMesh(verts, inds, normals, tiles, AtlasHandler.getTexture());
 		quadTest.addComponent(new ComponentMesh(quadMesh));
 		
 //		Scene.getActive().getGuiHandler().addElement(new GuiBox(new Bounds(10.0f, 10.0f, 100.0f, 100.0f), AtlasHandler.instance.getTexture()));

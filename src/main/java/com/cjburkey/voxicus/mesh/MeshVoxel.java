@@ -18,21 +18,18 @@ public class MeshVoxel extends Mesh {
 	
 	private Texture texture;
 	private int nbo;
-	private int obo;
-	private int pbo;
+	private int tbo;
 	
 	public MeshVoxel() {
 		nbo = glGenBuffers();
-		obo = glGenBuffers();
-		pbo = glGenBuffers();
+		tbo = glGenBuffers();
 	}
 	
-	public void setMesh(List<Vector3f> verts, List<Short> inds, List<Vector3f> normals, List<Vector2f> offsets, List<Vector3f> pos) {
+	public void setMesh(List<Vector3f> verts, List<Short> inds, List<Vector3f> normals, List<Vector2f> tileTexturePos) {
 		super.setVertices(verts, inds);
 		
 		FloatBuffer nBuff = Util.vec3fBuffer(normals.toArray(new Vector3f[normals.size()]));
-		FloatBuffer oBuff = Util.vec2fBuffer(offsets.toArray(new Vector2f[offsets.size()]));
-		FloatBuffer pBuff = Util.vec3fBuffer(pos.toArray(new Vector3f[pos.size()]));
+		FloatBuffer tBuff = Util.vec2fBuffer(tileTexturePos.toArray(new Vector2f[tileTexturePos.size()]));
 		
 		bindVertexArray();
 		bindNormalBuffer();
@@ -43,27 +40,19 @@ public class MeshVoxel extends Mesh {
 		unbindVertexBuffer();
 		memFree(nBuff);
 		
-		bindOffsetBuffer();
-		glBufferData(GL_ARRAY_BUFFER, oBuff, GL_STATIC_DRAW);
+		bindTileBuffer();
+		glBufferData(GL_ARRAY_BUFFER, tBuff, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
 		glDisableVertexAttribArray(2);
 		unbindVertexBuffer();
-		memFree(oBuff);
-		
-		bindPosBuffer();
-		glBufferData(GL_ARRAY_BUFFER, pBuff, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, false, 0, 0);
-		glDisableVertexAttribArray(3);
-		unbindVertexBuffer();
-		memFree(pBuff);
+		memFree(tBuff);
 		unbindVertexArray();
 	}
 	
-	public void setMesh(List<Vector3f> verts, List<Short> inds, List<Vector3f> normals, List<Vector2f> offsets, List<Vector3f> pos, Texture texture) {
+	public void setMesh(List<Vector3f> verts, List<Short> inds, List<Vector3f> normals, List<Vector2f> tileTexturePos, Texture texture) {
 		setTexture(texture);
-		setMesh(verts, inds, normals, offsets, pos);
+		setMesh(verts, inds, normals, tileTexturePos);
 	}
 	
 	public void setTexture(Texture texture) {
@@ -79,26 +68,19 @@ public class MeshVoxel extends Mesh {
 		
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
-		glDisableVertexAttribArray(3);
 		glDeleteBuffers(nbo);
-		glDeleteBuffers(obo);
-		glDeleteBuffers(pbo);
+		glDeleteBuffers(tbo);
 		
 		nbo = 0;
-		obo = 0;
-		pbo = 0;
+		tbo = 0;
 	}
 	
 	public void bindNormalBuffer() {
 		glBindBuffer(GL_ARRAY_BUFFER, nbo);
 	}
 	
-	public void bindOffsetBuffer() {
-		glBindBuffer(GL_ARRAY_BUFFER, obo);
-	}
-	
-	public void bindPosBuffer() {
-		glBindBuffer(GL_ARRAY_BUFFER, pbo);
+	public void bindTileBuffer() {
+		glBindBuffer(GL_ARRAY_BUFFER, tbo);
 	}
 	
 	public Texture getTexture() {
@@ -106,13 +88,11 @@ public class MeshVoxel extends Mesh {
 	}
 	
 	protected void onRenderCall() {
-		getShader().setUniform("tileSize", 1.0f / (float) AtlasHandler.getWidth());
+		getShader().setUniform("atlasPreDoubleWidth", AtlasHandler.getWidth() / 2);
 		texture.bindTexture();
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
 		super.onRenderCall();
-		glDisableVertexAttribArray(3);
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(1);
 		Texture.unbindTexture();

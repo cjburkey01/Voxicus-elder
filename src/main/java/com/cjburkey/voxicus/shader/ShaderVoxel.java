@@ -3,7 +3,6 @@ package com.cjburkey.voxicus.shader;
 import static org.lwjgl.opengl.GL20.*;
 import com.cjburkey.voxicus.core.Debug;
 import com.cjburkey.voxicus.core.Util;
-import com.cjburkey.voxicus.texture.AtlasHandler;
 
 public class ShaderVoxel extends ShaderProgram {
 	
@@ -29,7 +28,7 @@ public class ShaderVoxel extends ShaderProgram {
 		addUniform("projectionMatrix");
 		addUniform("modelViewMatrix");
 		addUniform("sampler");
-		addUniform("tileSize");
+		addUniform("atlasPreDoubleWidth");
 		
 		setUniform("sampler", 0);
 	}

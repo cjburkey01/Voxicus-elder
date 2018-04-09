@@ -30,7 +30,7 @@ public abstract class Mesh {
 	/**
 	 * This should not be overridden, create a different method and call <i>super.setVertices();</i> instead.
 	 */
-	public void setVertices(List<Vector3f> verts, List<Short> inds) {
+	protected void setVertices(List<Vector3f> verts, List<Short> inds) {
 		elements = inds.size();
 		
 		FloatBuffer vertBuff = Util.vec3fBuffer(verts.toArray(new Vector3f[verts.size()]));

@@ -74,7 +74,7 @@ public final class Game {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		shaderColored = new ShaderColor("res/voxicus/shader", "colorVertex", "colorFragment");
+		shaderColored = new ShaderColor("res/voxicus/shader/core", "colorVertex", "colorFragment");
 		if (shaderColored.getHasError()) {
 			Debug.error("Failed to create color shader");
 			stop();
@@ -83,7 +83,7 @@ public final class Game {
 		shaderColored.bind();
 		Debug.log("Created color shader program");
 		
-		shaderTextured = new ShaderTexture("res/voxicus/shader", "textureVertex", "textureFragment");
+		shaderTextured = new ShaderTexture("res/voxicus/shader/core", "textureVertex", "textureFragment");
 		if (shaderTextured.getHasError()) {
 			Debug.error("Failed to create texture shader");
 			stop();
@@ -92,7 +92,7 @@ public final class Game {
 		shaderTextured.bind();
 		Debug.log("Created texture shader program");
 		
-		shaderTexturedUI = new ShaderTextureUI("res/voxicus/shader", "textureUIVertex", "textureUIFragment");
+		shaderTexturedUI = new ShaderTextureUI("res/voxicus/shader/core", "textureUIVertex", "textureUIFragment");
 		if (shaderTexturedUI.getHasError()) {
 			Debug.error("Failed to create textured ui shader");
 			stop();
@@ -101,7 +101,7 @@ public final class Game {
 		shaderTexturedUI.bind();
 		Debug.log("Created textured ui shader program");
 
-		shaderVoxel = new ShaderVoxel("res/voxicus/shader", "voxelVertex", "voxelFragment");
+		shaderVoxel = new ShaderVoxel("res/voxicus/shader/voxel", "voxelVertex", "voxelFragment");
 		if (shaderVoxel.getHasError()) {
 			Debug.error("Failed to create voxel shader");
 			stop();
