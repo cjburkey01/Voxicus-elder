@@ -14,8 +14,8 @@ public class World implements IChunkHandler {
 	
 	public final long seed;
 	public final Random random;
-	private final Map<Integer, ChunkGenPair> chunks = new HashMap<>();
-	private final Map<Integer, ComponentChunk> instantiated = new HashMap<>();
+	private final Map<Vector3i, ChunkGenPair> chunks = new HashMap<>();
+	private final Map<Vector3i, ComponentChunk> instantiated = new HashMap<>();
 	private final IChunkGenerator chunkGenerator;
 	
 	public World(IChunkGenerator chunkGenerator) {
@@ -42,11 +42,10 @@ public class World implements IChunkHandler {
 	}
 	
 	private ChunkGenPair getChunkGenPair(Vector3i pos) {
-		int i = getIndexOfPos(pos);
-		ChunkGenPair cp = chunks.get(i);
+		ChunkGenPair cp = chunks.get(pos);
 		if (cp == null) {
 			cp = new ChunkGenPair(new Chunk(pos));
-			chunks.put(i, cp);
+			chunks.put(pos, cp);
 		}
 		return cp;
 	}
@@ -74,21 +73,16 @@ public class World implements IChunkHandler {
 			Debug.warn("Failed to spawn chunk: {}", chunkPos);
 			return;
 		}
-		instantiated.put(getIndexOfPos(chunkPos), cc);
+		instantiated.put(chunkPos, cc);
 	}
 	
 	public void despawnChunk(Vector3i chunkPos) {
-		int i = getIndexOfPos(chunkPos);
-		if (!instantiated.containsKey(i)) {
+		if (!instantiated.containsKey(chunkPos)) {
 			Debug.warn("Chunk already despawned: " + chunkPos);
 			return;
 		}
-		instantiated.get(i).getParentObj().destroy();
-		instantiated.remove(i);
-	}
-	
-	private int getIndexOfPos(Vector3i pos) {
-		return pos.z * Chunk.SIZE * Chunk.SIZE + pos.y * Chunk.SIZE + pos.x;
+		instantiated.get(chunkPos).getParentObj().destroy();
+		instantiated.remove(chunkPos);
 	}
 	
 	private static class ChunkGenPair {

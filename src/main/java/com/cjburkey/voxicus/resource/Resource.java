@@ -10,6 +10,10 @@ public class Resource {
 		this.path = path;
 	}
 	
+	public String getFullPath() {
+		return "/res/" + domain + '/' + path;
+	}
+	
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -48,10 +52,6 @@ public class Resource {
 	
 	public String toString() {
 		return domain + ':' + path;
-	}
-	
-	public String getFullPath() {
-		return "/res/" + domain + '/' + path;
 	}
 	
 }

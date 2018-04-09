@@ -18,6 +18,8 @@ import com.cjburkey.voxicus.shader.ShaderColor;
 import com.cjburkey.voxicus.shader.ShaderProgram;
 import com.cjburkey.voxicus.shader.ShaderTexture;
 import com.cjburkey.voxicus.shader.ShaderTextureUI;
+import com.cjburkey.voxicus.shader.ShaderVoxel;
+import com.cjburkey.voxicus.texture.AtlasHandler;
 import com.cjburkey.voxicus.world.Scene;
 
 public final class Game {
@@ -38,6 +40,7 @@ public final class Game {
 	public ShaderProgram shaderColored;
 	public ShaderProgram shaderTextured;
 	public ShaderProgram shaderTexturedUI;
+	public ShaderProgram shaderVoxel;
 	private final Scene world = new Scene();
 	private final EventSystem globalEventHandler = new EventSystem();
 	
@@ -45,7 +48,7 @@ public final class Game {
 		Debug.log("Initializing game");
 		Time.init();
 		
-		window = new Window(false, 4);
+		window = new Window(false, 0);
 		window.setSize(window.getScreenSize().x / 2, window.getScreenSize().y / 2, true);
 		window.setTitle(INST.getName() + ' ' + INST.getVersion());
 		window.show();
@@ -97,11 +100,20 @@ public final class Game {
 		}
 		shaderTexturedUI.bind();
 		Debug.log("Created textured ui shader program");
+
+		shaderVoxel = new ShaderVoxel("res/voxicus/shader", "voxelVertex", "voxelFragment");
+		if (shaderVoxel.getHasError()) {
+			Debug.error("Failed to create voxel shader");
+			stop();
+			return;
+		}
+		shaderVoxel.bind();
+		Debug.log("Created voxel shader program");
 		
 		Input.init(window);
 		
 		INST.preinit();
-		
+		AtlasHandler.registerTextures();
 		INST.init();
 		
 		startGameLoop();
