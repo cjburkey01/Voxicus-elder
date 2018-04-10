@@ -8,11 +8,13 @@ public class Chunk {
 	
 	public static final int SIZE = 16;
 	
-	private Vector3i chunkPos;
+	private final IChunkHandler parent;
+	private final Vector3i chunkPos = new Vector3i();
 	private BlockState[] blocks;
 	
-	public Chunk(Vector3i chunkPos) {
-		this.chunkPos = new Vector3i(chunkPos);
+	public Chunk(IChunkHandler parent, Vector3i chunkPos) {
+		this.parent = parent;
+		this.chunkPos.set(chunkPos);
 		blocks = new BlockState[SIZE * SIZE * SIZE];
 	}
 	
@@ -21,11 +23,16 @@ public class Chunk {
 		return state == null || !state.getParent().isFullBlock(state);
 	}
 	
+	public boolean getIsAirBlock(Vector3i pos) {
+		BlockState at = getBlock(pos);
+		return at == null;
+	}
+	
 	public void setBlock(Vector3i pos, Block block) {
 		if (!posInChunk(pos)) {
 			return;
 		}
-		blocks[getIndex(pos)] = new BlockState(block, this, pos);
+		blocks[getIndex(pos)] = (block == null) ? null : new BlockState(block, this, pos);
 	}
 	
 	public BlockState getBlock(Vector3i pos) {
@@ -45,6 +52,10 @@ public class Chunk {
 	
 	public Vector3i getChunkPos() {
 		return new Vector3i(chunkPos);
+	}
+	
+	public IChunkHandler getWorld() {
+		return parent;
 	}
 	
 }

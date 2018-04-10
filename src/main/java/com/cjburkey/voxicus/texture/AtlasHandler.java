@@ -37,7 +37,6 @@ public class AtlasHandler {
 			for (int y = 0; y < width; y ++) {
 				texPos.put(x * width + y, textures.get(i));
 				texture.addImage(x, y, textures.get(i));
-//				Debug.log("{} at {}, {} is {}", i, x, y, textures.get(i).toString());
 				i ++;
 			}
 		}

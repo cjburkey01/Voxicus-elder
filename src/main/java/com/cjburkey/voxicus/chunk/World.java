@@ -3,6 +3,7 @@ package com.cjburkey.voxicus.chunk;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Stack;
 import org.joml.Vector3i;
 import com.cjburkey.voxicus.component.ComponentChunk;
 import com.cjburkey.voxicus.core.Debug;
@@ -17,6 +18,7 @@ public class World implements IChunkHandler {
 	private final Map<Vector3i, ChunkGenPair> chunks = new HashMap<>();
 	private final Map<Vector3i, ComponentChunk> instantiated = new HashMap<>();
 	private final IChunkGenerator chunkGenerator;
+	private final Stack<Runnable> onDoneQueue = new Stack<>();
 	
 	public World(IChunkGenerator chunkGenerator) {
 		this(new Random().nextInt() / 200, chunkGenerator);
@@ -26,25 +28,37 @@ public class World implements IChunkHandler {
 		this.seed = seed;
 		this.random = new Random(seed);
 		this.chunkGenerator = chunkGenerator;
+		
+		Debug.log("World seed: {}", seed);
+	}
+	
+	public void addSynchronousAction(Runnable r) {
+		onDoneQueue.push(r);
+	}
+	
+	public void tick() {
+		int i = 0;
+		while (!onDoneQueue.isEmpty() && i < 20) {
+			Runnable r = onDoneQueue.pop();
+			if (r != null) {
+				r.run();
+			}
+			i ++;
+		}
+	}
+	
+	public void exit() {
+		ThreadedChunkGeneration.stopSystem();
 	}
 	
 	public Chunk getChunk(Vector3i pos) {
 		return getChunkGenPair(pos).chunk;
 	}
 	
-	public Chunk getAndGenerateChunk(Vector3i pos) {
-		ChunkGenPair cp = getChunkGenPair(pos);
-		if (!cp.generated) {
-			chunkGenerator.generate(seed, random, this, cp.chunk);
-			cp.generated = true;
-		}
-		return cp.chunk;
-	}
-	
 	private ChunkGenPair getChunkGenPair(Vector3i pos) {
 		ChunkGenPair cp = chunks.get(pos);
 		if (cp == null) {
-			cp = new ChunkGenPair(new Chunk(pos));
+			cp = new ChunkGenPair(new Chunk(this, pos));
 			chunks.put(pos, cp);
 		}
 		return cp;
@@ -54,20 +68,30 @@ public class World implements IChunkHandler {
 		return Util.floorDiv(pos, Chunk.SIZE);
 	}
 	
-	@Deprecated
 	public void spawnAround(Vector3i pos, int size) {
 		Vector3i p = new Vector3i().zero();
 		for (p.z = -size; p.z <= size; p.z ++) {
 			for (p.y = -size; p.y <= size; p.y ++) {
 				for (p.x = -size; p.x <= size; p.x ++) {
-					spawnChunk(p.add(pos, new Vector3i()));
+					Vector3i ps = Util.add(p, pos);
+					tryGenerateChunk(Util.add(p, pos), () -> spawnChunk(ps));
 				}
 			}
 		}
 	}
 	
+	public void tryGenerateChunk(Vector3i chunkPos, Runnable onDone) {
+		if (!ThreadedChunkGeneration.getHasStarted()) {
+			ThreadedChunkGeneration.startSystem();
+		}
+		ThreadedChunkGeneration.addChunk(this, chunkPos, onDone);
+	}
+	
 	public void spawnChunk(Vector3i chunkPos) {
-		Chunk c = getAndGenerateChunk(chunkPos);
+		if (instantiated.containsKey(chunkPos)) {
+			return;
+		}
+		Chunk c = getChunk(chunkPos);
 		ComponentChunk cc = Scene.getActive().addObject("Chunk " + chunkPos).addComponent(new ComponentChunk(c));
 		if (cc == null) {
 			Debug.warn("Failed to spawn chunk: {}", chunkPos);
@@ -85,7 +109,7 @@ public class World implements IChunkHandler {
 		instantiated.remove(chunkPos);
 	}
 	
-	private static class ChunkGenPair {
+	public static class ChunkGenPair {
 		
 		public final Chunk chunk;
 		public boolean generated;
@@ -99,6 +123,18 @@ public class World implements IChunkHandler {
 			this.generated = generated;
 		}
 		
+	}
+	
+	public IChunkGenerator getGenerator() {
+		return chunkGenerator;
+	}
+	
+	public long getSeed() {
+		return seed;
+	}
+	
+	public Random getRandom() {
+		return random;
 	}
 	
 }

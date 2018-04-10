@@ -405,6 +405,26 @@ public class Util {
 		return a.add(b, new Vector3f(0.0f, 0.0f, 0.0f));
 	}
 	
+	public static Vector3i add(Vector3i a, Vector3i b) {
+		return a.add(b, new Vector3i(0, 0, 0));
+	}
+	
+	public static Vector3i mul(Vector3i a, Vector3i b) {
+		Vector3i out = new Vector3i(a);
+		out.x *= b.x;
+		out.y *= b.y;
+		out.z *= b.z;
+		return out;
+	}
+	
+	public static Vector3i mul(Vector3i a, int b) {
+		Vector3i out = new Vector3i(a);
+		out.x *= b;
+		out.y *= b;
+		out.z *= b;
+		return out;
+	}
+	
 	public static Vector3f neg(Vector3f a) {
 		return a.negate(new Vector3f(0.0f, 0.0f, 0.0f));
 	}

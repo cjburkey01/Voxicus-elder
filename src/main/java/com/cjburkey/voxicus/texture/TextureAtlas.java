@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.stb.STBImageResize.*;
 import java.nio.ByteBuffer;
 import org.lwjgl.BufferUtils;
-import com.cjburkey.voxicus.core.Debug;
 import com.cjburkey.voxicus.resource.Resource;
 
 public class TextureAtlas extends Texture {
@@ -49,7 +48,6 @@ public class TextureAtlas extends Texture {
 		int s = size / i;
 		ByteBuffer image = BufferUtils.createByteBuffer(s * s * 4);
 		img.position(0);
-		Debug.log("{},{} at {} with {}", x / i, y / i, lod, s);
 		if (i != 1) {
 			stbir_resize(img, size, size, 0, image, s, s, 0, STBIR_TYPE_UINT8, 4, 3, 0, STBIR_EDGE_CLAMP, STBIR_EDGE_CLAMP, STBIR_FILTER_BOX, STBIR_FILTER_BOX, STBIR_COLORSPACE_LINEAR);
 		} else {
