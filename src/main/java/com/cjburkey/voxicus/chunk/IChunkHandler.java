@@ -3,6 +3,8 @@ package com.cjburkey.voxicus.chunk;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import org.joml.Vector3i;
+import com.cjburkey.voxicus.block.Block;
+import com.cjburkey.voxicus.block.BlockState;
 import com.cjburkey.voxicus.generation.IChunkGenerator;
 
 public interface IChunkHandler {
@@ -46,5 +48,40 @@ public interface IChunkHandler {
 	 * Ticks the world and executes a synchronous action
 	 */
 	void tick();
+	
+	/**
+	 * Replaces the block at the provided position with the provided block
+	 */
+	void setBlock(Block block, Vector3i pos);
+	
+	/**
+	 * Removes the block at the specified position
+	 */
+	void deleteBlock(Vector3i pos);
+	
+	/**
+	 * Re-renders the chunk at the position
+	 */
+	void updateChunk(Vector3i pos, boolean updateNeighbors);
+	
+	/**
+	 * Retrieves a specific block from some chunk in the chunk handler
+	 */
+	BlockState getBlockFromPos(Vector3i pos);
+	
+	/**
+	 * Retrieves a specific block relative to the specified chunk in the chunk handler
+	 */
+	BlockState getBlock(Vector3i chunk, Vector3i pos);
+	
+	/**
+	 * Check whether the block at this position is not a full cube
+	 */
+	boolean getIsTransparentBlockAt(Vector3i block);
+	
+	/**
+	 * Check whether the block at this position relative to the supplied chunk is not a full cube
+	 */
+	boolean getIsTransparentBlockAt(Vector3i chunk, Vector3i block);
 	
 }

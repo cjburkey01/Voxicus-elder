@@ -67,7 +67,7 @@ public class ThreadedChunkGeneration {
 				continue;
 			}
 			IChunkHandler w = cap.chunk.getWorld();
-			w.getGenerator().generate(w.getSeed(), w.getRandom(), w, cap.chunk);
+			w.getGenerator().generate(w, cap.chunk);
 			w.addSynchronousAction(cap.onDone);
 		}
 		Debug.log("Cleaning up threaded generation system");

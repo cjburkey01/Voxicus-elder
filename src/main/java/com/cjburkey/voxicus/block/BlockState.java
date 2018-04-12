@@ -26,6 +26,10 @@ public class BlockState {
 		this.dataHandler = dataHandler;
 	}
 	
+	public void onUpdate() {
+		parent.onUpdate(this);
+	}
+	
 	public Block getParent() {
 		return parent;
 	}
@@ -44,6 +48,10 @@ public class BlockState {
 	
 	public DataHandler getDataHandler() {
 		return dataHandler;
+	}
+	
+	public boolean getIsTransparent() {
+		return !parent.getIsFullBlock(this);
 	}
 	
 }

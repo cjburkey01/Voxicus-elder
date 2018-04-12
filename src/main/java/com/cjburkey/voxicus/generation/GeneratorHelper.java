@@ -15,14 +15,12 @@ public class GeneratorHelper {
 	public static final double AMPLITUDE_DEF = 50.0d;
 	
 	public static double getNoise(long seed, Vector3i chunkPos, Vector3i posInChunk) {
-		double v = getNoise(seed, Util.add(Util.mul(chunkPos, Chunk.SIZE), posInChunk), SCALE_DEF, BASE_DEF, AMPLITUDE_DEF);
-		return v;
+		return getNoise(seed, Util.add(Util.mul(chunkPos, Chunk.SIZE), posInChunk), SCALE_DEF, BASE_DEF, AMPLITUDE_DEF);
 	}
 	
 	public static double getNoise(long seed, Vector3i block, double scale, double base, double amplitude) {
-		double val = SimplexNoise.noise(ARB1 * seed + block.x / scale, ARB2 * seed + block.y / scale, ARB3 * seed + block.z / scale);
-		val += (base - block.y) / amplitude;
-		return val;
+		return SimplexNoise.noise(ARB1 * seed + block.x / scale, ARB2 * seed + block.y / scale, ARB3 * seed + block.z / scale)
+			+ (base - block.y) / amplitude;
 	}
 	
 }

@@ -10,8 +10,11 @@ public class Block {
 		texture = res;
 	}
 	
-	public boolean isFullBlock(BlockState state) {
+	public boolean getIsFullBlock(BlockState state) {
 		return true;
+	}
+	
+	public void onUpdate(BlockState instance) {
 	}
 	
 }

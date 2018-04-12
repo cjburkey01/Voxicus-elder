@@ -3,6 +3,7 @@ package com.cjburkey.voxicus.chunk;
 import org.joml.Vector3i;
 import com.cjburkey.voxicus.block.Block;
 import com.cjburkey.voxicus.block.BlockState;
+import com.cjburkey.voxicus.core.Util;
 
 public class Chunk {
 	
@@ -16,11 +17,6 @@ public class Chunk {
 		this.parent = parent;
 		this.chunkPos.set(chunkPos);
 		blocks = new BlockState[SIZE * SIZE * SIZE];
-	}
-	
-	public boolean getIsTransparentBlockAt(Vector3i pos) {
-		BlockState state = getBlock(pos);
-		return state == null || !state.getParent().isFullBlock(state);
 	}
 	
 	public boolean getIsAirBlock(Vector3i pos) {
@@ -42,12 +38,15 @@ public class Chunk {
 		return blocks[getIndex(pos)];
 	}
 	
-	public boolean posInChunk(Vector3i pos) {
-		return !(pos.x < 0 || pos.x >= SIZE || pos.y < 0 || pos.y >= SIZE || pos.z < 0 || pos.z >= SIZE);
+	public BlockState getBlock(int i) {
+		if (i < 0 || i > blocks.length) {
+			return null;
+		}
+		return blocks[i];
 	}
 	
-	private int getIndex(Vector3i pos) {
-		return pos.z * SIZE * SIZE + pos.y * SIZE + pos.x;
+	public boolean posInChunk(Vector3i pos) {
+		return !(pos.x < 0 || pos.x >= SIZE || pos.y < 0 || pos.y >= SIZE || pos.z < 0 || pos.z >= SIZE);
 	}
 	
 	public Vector3i getChunkPos() {
@@ -56,6 +55,17 @@ public class Chunk {
 	
 	public IChunkHandler getWorld() {
 		return parent;
+	}
+	
+	public static int getIndex(Vector3i pos) {
+		return pos.z * SIZE * SIZE + pos.y * SIZE + pos.x;
+	}
+	
+	public static Vector3i getPosition(int i) {
+		int z = Util.floorDiv(i, SIZE * SIZE);
+		i -= z * SIZE * SIZE;
+		int y = Util.floorDiv(i, SIZE);
+		return new Vector3i(i - y * SIZE, y, z);
 	}
 	
 }

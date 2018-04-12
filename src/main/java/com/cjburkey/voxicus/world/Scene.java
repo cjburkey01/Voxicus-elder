@@ -6,6 +6,7 @@ import com.cjburkey.voxicus.Voxicus;
 import com.cjburkey.voxicus.component.Component;
 import com.cjburkey.voxicus.component.ComponentCamera;
 import com.cjburkey.voxicus.core.Debug;
+import com.cjburkey.voxicus.event.EventPostObjectInit;
 import com.cjburkey.voxicus.event.EventSystem;
 import com.cjburkey.voxicus.gui.GuiHandler;
 
@@ -14,6 +15,7 @@ public class Scene {
 	private static Scene active;
 	
 	private boolean camWasNull = true;
+	private boolean doneInit = false;
 	private final GuiHandler guiHandler = new GuiHandler();
 	private final List<GameObject> objs = new ArrayList<>();
 	private final List<GameObject> addQueue = new ArrayList<>();
@@ -37,6 +39,10 @@ public class Scene {
 				objs.remove(i);
 				i --;
 			}
+		}
+		if (!doneInit) {
+			doneInit = true;
+			eventHandler.triggerEvent(new EventPostObjectInit());
 		}
 		while (!addQueue.isEmpty()) {
 			objs.add(addQueue.get(0));

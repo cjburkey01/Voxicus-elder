@@ -44,7 +44,7 @@ public class InstanceVoxicus implements IInstance {
 	
 	public void init() {
 		world = new World(0, new ChunkGeneratorOverworld());
-		world.spawnAround(new Vector3i().zero(), 2);
+		world.spawnAround(new Vector3i(0, 0, 0), 5);
 		
 		addCamera();
 	}
@@ -53,7 +53,7 @@ public class InstanceVoxicus implements IInstance {
 		GameObject camObj = Game.getWorld().addObject("Camera");
 		camObj.addComponent(new ComponentCamera(Game.getWindow().getWindowSize())).setClearColor(new Vector3f(0.1f, 0.1f, 0.1f));
 		camObj.addComponent(new ComponentMouseLook()).setMouseLock(true).setPauseTimeOnFreeCursor(true).setPausedTimeScale(0.0d).setSmoothing(0.13f);
-		camObj.addComponent(new ComponentFreeMove()).doManualMove(new Vector3f(0.0f, 0.0f, 0.75f), false);
+		camObj.addComponent(new ComponentFreeMove());
 	}
 	
 	public void update() {
